@@ -1,0 +1,97 @@
+{
+  "name": "Eclipsia",
+  "version": "5.4.0",
+  "scrapers": [
+    {
+      "id": "soryn",
+      "name": "Soryn.",
+      "description": "Provider: Netmirror | English, Hindi",
+      "version": "3.2.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/soryn.js",
+      "enabled": true,
+      "formats": ["mp4", "m3u8", "mkv"],
+      "logo": "",
+      "contentLanguage": ["en", "hi"]
+    },
+    {
+      "id": "eclipsia",
+      "name": "Eclipsia.",
+      "description": "Provider: NoTorrent | English",
+      "version": "3.7.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/eclipsia.js",
+      "enabled": true,
+      "formats": ["mp4", "m3u8", "mkv"],
+      "logo": "",
+      "contentLanguage": ["en"]
+    },
+    {
+      "id": "novus",
+      "name": "Novus.",
+      "description": "Provider: CineFreak | Bangla, English, Hindi",
+      "version": "3.1.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/novus.js",
+      "enabled": true,
+      "formats": ["mkv", "mp4"],
+      "logo": "",
+      "contentLanguage": ["bn", "hi", "en"]
+    },
+    {
+      "id": "nyxora",
+      "name": "Nyxora.",
+      "description": "Provider: Vidlink | English, Bangla, Hindi",
+      "version": "2.1.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/nyxora.js",
+      "enabled": true,
+      "formats": ["mp4", "m3u8"],
+      "logo": "",
+      "contentLanguage": ["en", "hi", "bn"]
+    },
+    {
+      "id": "karnis",
+      "name": "Karnis.",
+      "description": "Provider: Castle | English, Hindi",
+      "version": "1.5.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/karnis.js",
+      "enabled": true,
+      "formats": ["mp4", "m3u8"],
+      "logo": "",
+      "contentLanguage": ["en", "hi"]
+    },
+    {
+      "id": "vornix",
+      "name": "Vornix.",
+      "description": "Provider: VegaMovies | English, Hindi",
+      "version": "3.9.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/vornix.js",
+      "enabled": true,
+      "formats": ["mp4", "mkv"],
+      "logo": "",
+      "contentLanguage": ["en", "hi"]
+    },
+    {
+      "id": "onyxia",
+      "name": "Onyxia.",
+      "description": "Provider: AniZone | Sub & Dubbed Anime",
+      "version": "2.4.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/onyxia.js",
+      "enabled": true,
+      "formats": ["m3u8"],
+      "logo": "",
+      "contentLanguage": ["en", "ja"]
+    }
+  ]
+}
