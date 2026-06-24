@@ -1,6 +1,6 @@
 "use strict";
 
-const TMDB_API_KEY = "18bcd6b4a273f4fb549c95037f27ffe9";
+const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 const ENC_DEC_API = "https://enc-dec.app/api";
 const VIDLINK_API = "https://vidlink.pro/api/b";
 const VIDLINK_HEADERS = {

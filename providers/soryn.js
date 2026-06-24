@@ -13,7 +13,7 @@ const __async = (__this, __arguments, generator) => {
   });
 };
 
-const TMDB_API_KEY = "18bcd6b4a273f4fb549c95037f27ffe9";
+const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 const API = "https://tv.imgcdn.kim/newtv";
 const DEFAULT_REFERER = "https://net11.cc/";
 const DEFAULT_QUALITY = "1080p";

@@ -14,7 +14,7 @@ const __async = (__this, __arguments, generator) => {
 };
 
 const ECLIPSIA_API = "https://addon-osvh.onrender.com";
-const TMDB_API_KEY = "18bcd6b4a273f4fb549c95037f27ffe9";
+const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 
 const HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"

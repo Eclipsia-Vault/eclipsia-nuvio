@@ -37,7 +37,7 @@ const __async = (__this, __arguments, generator) => {
   });
 };
 
-const TMDB_API_KEY = "18bcd6b4a273f4fb549c95037f27ffe9";
+const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 const TMDB_BASE_URL = "https://api.themoviedb.org/3"
 const KARNIS_BASE = "https://api.hlowb.com"
 const PKG = "com.external.castle";
