@@ -15,11 +15,10 @@ const QUALITY_ORDER = {
   "1440p": 4,
   "1080p": 3,
   "720p": 2,
-  "Auto": -2,
-  "Unknown": -3
+  "Auto": -2
 };
 
-const ALLOWED_QUALITIES = ["4K", "1440p", "1080p", "720p", "Auto", "Unknown"];
+const ALLOWED_QUALITIES = ["4K", "1440p", "1080p", "720p", "Auto"];
 
 function pad2(n) {
   return String(parseInt(n, 10)).padStart(2, "0");
