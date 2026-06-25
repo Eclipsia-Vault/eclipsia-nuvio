@@ -28,10 +28,11 @@ This project is provided for educational and informational purposes only; users 
 | Mavonyx. | MovieBox | Movies & TV Shows | English, Bangla, Hindi | Supports MP4, DASH |
 | Karnis. | Castle | Movies & TV Shows | English, Hindi | Some TV shows have mismatched languages |
 | Solunix. | Stravo | Movies & TV Shows | English | Only English, Download Friendly |
+| Pynvix. | FMFTP | Movies & TV Shows | Bangla, English, Hindi | Cinescrape Proxy |
 | Kryxalia. | AniNeko | Subbed & Dubbed Anime | English, Japanese | Only Anime |
-| Onyxia. | AniZone | Subbed & Dubbed Anime | English, Japanese | Only Anime |
+| Onyxia. | AniZone | Subbed & Dubbed Anime | English, Japanese | Currently Disabled (Not Working) |
 | Nyxora. | Vidlink | Movies, TV Shows & Anime | English, Bangla, Hindi | Requires VPN to work in some regions |
-| Vornix. | VegaMovies | Movies & TV Shows | English, Hindi | Often doesn't work |
+| Vornix. | VegaMovies | Movies & TV Shows | English, Hindi | Currently Disabled (Not Working) |
 
 # **License**
 
