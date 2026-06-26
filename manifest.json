@@ -88,7 +88,7 @@
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/solunix.js",
-      "enabled": false,
+      "enabled": true,
       "formats": ["mp4", "m3u8", "mkv"],
       "logo": "",
       "contentLanguage": ["en"]
