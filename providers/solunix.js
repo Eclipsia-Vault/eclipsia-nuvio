@@ -62,10 +62,17 @@ function getImdbId(tmdbId, mediaType) {
 function resolveProxyUrl(url) {
   return __async(this, null, function* () {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
+      
       const response = yield fetch(url, {
         redirect: "follow",
-        headers: { ...HEADERS, "Referer": url },
+        signal: controller.signal,
+        headers: { ...HEADERS, "Referer": url.split("?")[0] },
       });
+      
+      clearTimeout(timeoutId);
+      
       const finalUrl = response.url;
       if ([".m3u8", ".mp4", ".mkv"].some((ext) => finalUrl.includes(ext))) {
         return finalUrl;
@@ -81,7 +88,7 @@ function resolveProxyUrl(url) {
       }
       return finalUrl || null;
     } catch {
-      return null;
+      return url;
     }
   });
 }
