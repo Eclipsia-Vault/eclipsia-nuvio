@@ -63,7 +63,7 @@ function resolveProxyUrl(url) {
   return __async(this, null, function* () {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
       
       const response = yield fetch(url, {
         redirect: "follow",
