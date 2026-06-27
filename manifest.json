@@ -3,19 +3,6 @@
   "version": "5.5.0",
   "scrapers": [
     {
-      "id": "soryn",
-      "name": "Soryn.",
-      "description": "Provider: Netmirror | English, Hindi",
-      "version": "3.2.0",
-      "author": "Eclipsia",
-      "supportedTypes": ["movie", "tv"],
-      "filename": "providers/soryn.js",
-      "enabled": true,
-      "formats": ["mp4", "m3u8", "mkv"],
-      "logo": "",
-      "contentLanguage": ["en", "hi"]
-    },
-    {
       "id": "eclipsia",
       "name": "Eclipsia.",
       "description": "Provider: NoTorrent | English",
@@ -29,6 +16,19 @@
       "contentLanguage": ["en"]
     },
     {
+      "id": "soryn",
+      "name": "Soryn.",
+      "description": "Provider: Netmirror | English, Hindi",
+      "version": "3.2.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/soryn.js",
+      "enabled": true,
+      "formats": ["mp4", "m3u8", "mkv"],
+      "logo": "https://raw.githubusercontent.com/eclipsia-404/util-nuvio/refs/heads/main/icons/nm.png",
+      "contentLanguage": ["en", "hi"]
+    },
+    {
       "id": "novus",
       "name": "Novus.",
       "description": "Provider: CineFreak | Bangla, English, Hindi",
@@ -38,34 +38,21 @@
       "filename": "providers/novus.js",
       "enabled": true,
       "formats": ["mkv", "mp4"],
-      "logo": "",
+      "logo": "https://raw.githubusercontent.com/eclipsia-404/util-nuvio/refs/heads/main/icons/cf.png",
       "contentLanguage": ["bn", "hi", "en"]
     },
     {
-      "id": "nyxora",
-      "name": "Nyxora.",
-      "description": "Provider: Vidlink | English, Bangla, Hindi",
-      "version": "2.1.0",
+      "id": "kryxalia",
+      "name": "Kryxalia.",
+      "description": "Provider: AniNeko | Sub & Dubbed Anime",
+      "version": "1.2.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
-      "filename": "providers/nyxora.js",
+      "filename": "providers/kryxalia.js",
       "enabled": true,
-      "formats": ["mp4", "m3u8"],
-      "logo": "",
-      "contentLanguage": ["en", "hi", "bn"]
-    },
-    {
-      "id": "karnis",
-      "name": "Karnis.",
-      "description": "Provider: Castle | English, Hindi",
-      "version": "1.5.0",
-      "author": "Eclipsia",
-      "supportedTypes": ["movie", "tv"],
-      "filename": "providers/karnis.js",
-      "enabled": true,
-      "formats": ["mp4", "m3u8"],
-      "logo": "",
-      "contentLanguage": ["en", "hi"]
+      "formats": ["m3u8"],
+      "logo": "https://raw.githubusercontent.com/eclipsia-404/util-nuvio/refs/heads/main/icons/cs.png",
+      "contentLanguage": ["en", "ja"]
     },
     {
       "id": "mavonyx",
@@ -81,19 +68,6 @@
       "contentLanguage": ["en", "hi", "bn"]
     },
     {
-      "id": "solunix",
-      "name": "Solunix.",
-      "description": "Provider: Stravo | English",
-      "version": "1.1.0",
-      "author": "Eclipsia",
-      "supportedTypes": ["movie", "tv"],
-      "filename": "providers/solunix.js",
-      "enabled": true,
-      "formats": ["mp4", "m3u8", "mkv"],
-      "logo": "",
-      "contentLanguage": ["en"]
-    },
-    {
       "id": "pynvix",
       "name": "Pynvix.",
       "description": "Provider: FMFTP | English, Bangla, Hindi",
@@ -107,6 +81,45 @@
       "contentLanguage": ["en", "bn", "hi"]
     },
     {
+      "id": "solunix",
+      "name": "Solunix.",
+      "description": "Provider: Stravo | English",
+      "version": "1.1.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/solunix.js",
+      "enabled": true,
+      "formats": ["mp4", "m3u8", "mkv"],
+      "logo": "",
+      "contentLanguage": ["en"]
+    },
+    {
+      "id": "karnis",
+      "name": "Karnis.",
+      "description": "Provider: Castle | English, Hindi",
+      "version": "1.5.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/karnis.js",
+      "enabled": true,
+      "formats": ["mp4", "m3u8"],
+      "logo": "",
+      "contentLanguage": ["en", "hi"]
+    },
+    {
+      "id": "nyxora",
+      "name": "Nyxora.",
+      "description": "Provider: Vidlink | English, Bangla, Hindi",
+      "version": "2.1.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/nyxora.js",
+      "enabled": true,
+      "formats": ["mp4", "m3u8"],
+      "logo": "",
+      "contentLanguage": ["en", "hi", "bn"]
+    },
+    {
       "id": "vornix",
       "name": "Vornix.",
       "description": "Provider: VegaMovies | English, Hindi",
@@ -118,19 +131,6 @@
       "formats": ["mp4", "mkv"],
       "logo": "",
       "contentLanguage": ["en", "hi"]
-    },
-    {
-      "id": "kryxalia",
-      "name": "Kryxalia.",
-      "description": "Provider: AniNeko | Sub & Dubbed Anime",
-      "version": "1.2.0",
-      "author": "Eclipsia",
-      "supportedTypes": ["movie", "tv"],
-      "filename": "providers/kryxalia.js",
-      "enabled": true,
-      "formats": ["m3u8"],
-      "logo": "",
-      "contentLanguage": ["en", "ja"]
     },
     {
       "id": "onyxia",
