@@ -13,7 +13,7 @@ const __async = (__this, __arguments, generator) => {
   });
 };
 
-const PYNVIX_API = "https://cinescrape-srkf.onrender.com/providers=fmftp";
+const PYNVIX_API = "https://moviebox-cfa7.onrender.com/source=v3%7Clang=all%7Cres=1080p";
 const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 
 const HEADERS = {
@@ -33,10 +33,10 @@ const extractQuality = (titleText) => {
 };
 
 const extractLanguage = (cleanedTitle) => {
-  const langMatch = String(cleanedTitle ?? "").match(/\(([^)]+)\)/);
-  if (!langMatch) return "Default";
-  const raw = langMatch[1].trim();
-  return raw.toLowerCase() === "hd stream"
+  const parts = String(cleanedTitle ?? "").split("|");
+  if (parts.length < 2) return "Default";
+  const raw = parts[parts.length - 1].trim();
+  return raw === ""
     ? "Default"
     : raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
 };
@@ -120,7 +120,7 @@ function buildStream(item) {
       name: nameParts.join(" • "),
       title: quality,
       url: streamUrl,
-      quality: "1080p",
+      quality,
       ...(Object.keys(headers).length > 0 ? { headers } : {}),
       provider: "Pynvix.",
     };
@@ -132,10 +132,7 @@ function parseStreams(data) {
     if (!Array.isArray(data?.streams) || data.streams.length === 0) return [];
 
     const validItems = data.streams.filter((item) => {
-      const cleanedTitle = cleanText(item?.title);
-      if (!cleanedTitle.toLowerCase().includes("")) return false;
       if (typeof item?.url !== "string" || !item.url.startsWith("https")) return false;
-
       const innerMatch = item.url.match(/[?&]url=(https?:\/\/[^&]+)/);
       return !innerMatch || innerMatch[1].startsWith("https");
     });
