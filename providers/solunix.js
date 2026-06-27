@@ -13,7 +13,7 @@ const __async = (__this, __arguments, generator) => {
   });
 };
 
-const SOLUNIX_API = "https://stravo-clfk.onrender.com";
+const SOLUNIX_API = "https://stravo-clfk.onrender.com/default";
 const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 
 const HEADERS = {
