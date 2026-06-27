@@ -12,7 +12,7 @@
       "filename": "providers/eclipsia.js",
       "enabled": true,
       "formats": ["mp4", "m3u8", "mkv"],
-      "logo": "https://git.nixnet.services/eclipsia/eclipsia-cloudstream/raw/branch/main/icons/icon.png",
+      "logo": "https://raw.githubusercontent.com/eclipsia-404/util-nuvio/refs/heads/main/icons/icon.png",
       "contentLanguage": ["en"]
     },
     {
