@@ -23,19 +23,19 @@ This project is provided for educational and informational purposes only; users 
 
 # **Scrapers** 
 
-| Name | Provider | Content | Language | Notes |
-|---|---|---|---|---|
-| Eclipsia. | NoTorrent | Movies & TV Shows | English | Only English |
-| Soryn. | Netmirror | Movies & TV Shows | English, Hindi | Requires VPN to work in some regions |
-| Novus. | CineFreak | Movies & TV Shows | Bangla, English, Hindi | Less TV Shows |
-| Mavonyx. | MovieBox | Movies & TV Shows | English, Bangla, Hindi | Supports MP4, DASH |
-| Karnis. | Castle | Movies & TV Shows | English, Hindi | Some TV shows have mismatched languages |
-| Solunix. | Stravo | Movies & TV Shows | English | Only English, Download Friendly |
-| Pynvix. | FMFTP | Movies & TV Shows | Bangla, English, Hindi | None |
-| Kryxalia. | AniNeko | Subbed & Dubbed Anime | English, Japanese | Only Anime |
-| Onyxia. | AniZone | Subbed & Dubbed Anime | English, Japanese | Currently Disabled (Not Working) |
-| Nyxora. | Vidlink | Movies, TV Shows & Anime | English, Bangla, Hindi | Requires VPN to work in some regions |
-| Vornix. | VegaMovies | Movies & TV Shows | English, Hindi | Currently Disabled (Not Working) |
+| Name | Provider | Content | Language | Status | Notes |
+|---|---|---|---|---|---|
+| Eclipsia. | NoTorrent | Movies & TV Shows | English | Enabled | Only English |
+| Soryn. | Netmirror | Movies & TV Shows | English, Hindi | Enabled | Requires VPN to work in some regions |
+| Novus. | CineFreak | Movies & TV Shows | Bangla, English, Hindi | Enabled | Less TV Shows |
+| Karnis. | Castle | Movies & TV Shows | English, Hindi | Enabled | Some TV shows have mismatched languages |
+| Solunix. | Stravo | Movies & TV Shows | English | Enabled | Only English, Download Friendly |
+| Pynvix. | MovieBox (Proxy) | Movies & TV Shows | Bangla, English, Hindi | Enabled | Uses Proxy |
+| Kryxalia. | AniNeko | Subbed & Dubbed Anime | English, Japanese | Enabled | Only Anime |
+| Nyxora. | Vidlink | Movies, TV Shows & Anime | English, Bangla, Hindi | Enabled | Requires VPN to work in some regions |
+| Mavonyx. | MovieBox | Movies & TV Shows | English, Bangla, Hindi | Disabled | Currently Not Working |
+| Onyxia. | AniZone | Subbed & Dubbed Anime | English, Japanese | Disabled | Currently Not Working |
+| Vornix. | VegaMovies | Movies & TV Shows | English, Hindi | Disabled | Currently Not Working |
 
 # **License**
 
