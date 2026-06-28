@@ -1,6 +1,6 @@
 const PROVIDER_NAME   = 'Novus.';
 const BASE_URL        = 'https://cinefreak.nl';
-const NOVUS_BASE   = 'https://new5.cinecloud.site';
+const ECLIPSIA_BASE   = 'https://new5.cinecloud.site';
 const TMDB_API_KEY    = '6e6ab700b6477171ee6c23d504b1e9cb';
 const REQUEST_TIMEOUT = 12000;
 
@@ -14,9 +14,8 @@ function encodeUri(str) {
   try { return encodeURIComponent(str); } catch (_) { return str; }
 }
 
-function fetchText(url, extraHeaders) {
-  const headers = Object.assign({}, HEADERS, extraHeaders || {});
-  return fetch(url, { headers: headers })
+function fetchText(url) {
+  return fetch(url, { headers: Object.assign({}, HEADERS) })
     .then(function(res) {
       if (!res || !res.ok) return null;
       return res.text();
@@ -24,12 +23,13 @@ function fetchText(url, extraHeaders) {
     .catch(function() { return null; });
 }
 
-function fetchJson(url, extraHeaders) {
-  return fetchText(url, extraHeaders).then(function(text) {
+function fetchJson(url) {
+  return fetchText(url).then(function(text) {
     if (!text) return null;
     try { return JSON.parse(text); } catch (_) { return null; }
   });
 }
+
 
 function parseQuality(raw) {
   const s = String(raw || '').toLowerCase();
@@ -94,7 +94,7 @@ function resolveFslUrl(fslPath) {
   const hash = extractHash(fslPath);
   if (!hash) return Promise.resolve(null);
   const subPath = fslPath.indexOf('/x/') !== -1 ? 'x' : 'f';
-  const pageUrl = NOVUS_BASE + '/' + subPath + '/' + hash;
+  const pageUrl = ECLIPSIA_BASE + '/' + subPath + '/' + hash;
   return fetchText(pageUrl).then(function(html) {
     if (!html) return null;
     return extractFslUrl(html);
@@ -301,13 +301,9 @@ function fetchPostPage(pathOrUrl) {
 function getTMDBInfo(tmdbId, type) {
   const isTv   = type === 'tv' || type === 'series';
   const apiUrl = isTv
-    ? 'https://api.themoviedb.org/3/tv/'    + tmdbId
-    : 'https://api.themoviedb.org/3/movie/' + tmdbId;
-  const tmdbHeaders = {
-    'Authorization': 'Bearer ' + TMDB_API_KEY,
-    'Accept':        'application/json',
-  };
-  return fetchJson(apiUrl, tmdbHeaders).then(function(data) {
+    ? 'https://api.themoviedb.org/3/tv/'    + tmdbId + '?api_key=' + TMDB_API_KEY
+    : 'https://api.themoviedb.org/3/movie/' + tmdbId + '?api_key=' + TMDB_API_KEY;
+  return fetchJson(apiUrl).then(function(data) {
     if (!data) return null;
     return {
       title: isTv ? data.name  : data.title,
@@ -352,7 +348,7 @@ function resolveStreamsFromQualities(qualities, season, episode, isTv) {
           title:   episodePrefix + q.quality + ' [FSL]',
           url:     directUrl,
           quality: q.quality,
-          headers: { Referer: NOVUS_BASE + '/' },
+          headers: { Referer: ECLIPSIA_BASE + '/' },
         });
       }
       return resolveNext(index + 1);

@@ -47,11 +47,9 @@ const isProxyUrl = (url) =>
 function getImdbId(tmdbId, mediaType) {
   return __async(this, null, function* () {
     const type = mediaType === "tv" ? "tv" : "movie";
-    const url = `https://api.themoviedb.org/3/${type}/${tmdbId}?append_to_response=external_ids`;
+    const url = `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
     try {
-      const response = yield fetch(url, {
-        headers: { "Authorization": `Bearer ${TMDB_API_KEY}` }
-      });
+      const response = yield fetch(url);
       if (!response.ok) return null;
       const data = yield response.json();
       return data?.external_ids?.imdb_id ?? null;
