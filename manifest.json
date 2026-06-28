@@ -114,7 +114,7 @@
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/mavonyx.js",
-      "enabled": false,
+      "enabled": true,
       "formats": ["mp4", "m3u8", "mpd"],
       "logo": "",
       "contentLanguage": ["en", "hi", "bn"]
