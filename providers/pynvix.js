@@ -27,18 +27,26 @@ const cleanText = (str) =>
     .replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]/gu, "")
     .trim();
 
-const extractQuality = (titleText) => {
-  const match = String(titleText ?? "").match(/(\d{3,4}p)/i);
+const ALLOWED_LANGS = ["hindi", "original", "english", "bangla", "english", "bengali"];
+
+const isValidLanguage = (lang) => {
+  if (lang === "Default") return true;
+  return ALLOWED_LANGS.includes(lang.toLowerCase());
+};
+
+const extractQuality = (text) => {
+  const match = String(text ?? "").match(/(\d{3,4}p)/i);
   return match?.[0] ?? "Unknown";
 };
 
 const extractLanguage = (cleanedTitle) => {
-  const parts = String(cleanedTitle ?? "").split("|");
-  if (parts.length < 2) return "Default";
-  const raw = parts[parts.length - 1].trim();
-  return raw === ""
-    ? "Default"
-    : raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+  const t = String(cleanedTitle ?? "");
+  const m = t.match(/Audio:\s*([^\n\u2E31|·]+)/i);
+  if (m) {
+    const lang = m[1].trim();
+    return lang === "" ? "Default" : lang.charAt(0).toUpperCase() + lang.slice(1).toLowerCase();
+  }
+  return "Default";
 };
 
 const isProxyUrl = (url) =>
@@ -87,8 +95,7 @@ function resolveProxyUrl(url) {
 }
 
 const detectStreamType = (url) => {
-  if (!url)
-    return "video";
+  if (!url) return "video";
   const lower = String(url).toLowerCase().split("?")[0];
   return lower.includes(".m3u8") ? "m3u8" : "video";
 };
@@ -99,8 +106,10 @@ function buildStream(item) {
     if (String(item.url).includes("github.com")) return null;
 
     const cleanedTitle = cleanText(item.title);
-    const quality = extractQuality(cleanedTitle);
+    const quality = extractQuality(cleanText(item.name) + " " + cleanedTitle);
     const language = extractLanguage(cleanedTitle);
+
+    if (!isValidLanguage(language)) return null;
 
     const headers = {
       ...(item.behaviorHints?.proxyHeaders?.request ?? {}),
@@ -113,11 +122,10 @@ function buildStream(item) {
 
     if (!streamUrl) return null;
 
-    const nameParts = ["Pynvix."];
-    if (language !== "Default") nameParts.push(language);
+    const langDisplay = language === "Default" ? "" : language;
 
     return {
-      name: nameParts.join(" • "),
+      name: "Pynvix." + (langDisplay ? ` • ${langDisplay}` : ""),
       title: quality,
       url: streamUrl,
       quality,
