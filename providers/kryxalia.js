@@ -1,3 +1,5 @@
+"use strict";
+
 const PROVIDER_NAME = "Kryxalia.";
 const BASE_URL = "https://anineko.to";
 const TMDB_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
@@ -19,9 +21,13 @@ function fetchText(url, options) {
 
 function getTMDBTitle(tmdbId, mediaType) {
   const type = mediaType === "movie" ? "movie" : "tv";
-  const url = `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${TMDB_KEY}`;
+  const url = `https://api.themoviedb.org/3/${type}/${tmdbId}`;
+  const tmdbHeaders = {
+    "Authorization": "Bearer " + TMDB_KEY,
+    "Accept": "application/json"
+  };
 
-  return fetch(url)
+  return fetch(url, { headers: tmdbHeaders })
     .then(r => r.json())
     .then(data => ({
       title: data.name ?? data.title ?? "",
