@@ -1,3 +1,5 @@
+"use strict";
+
 const PROVIDER_NAME = "Kryxalia.";
 const BASE_URL = "https://anineko.to";
 const TMDB_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
