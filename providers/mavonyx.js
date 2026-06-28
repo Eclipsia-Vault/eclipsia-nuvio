@@ -10,11 +10,11 @@ const __hasOwnProp = Object.prototype.hasOwnProperty;
 const __propIsEnum = Object.prototype.propertyIsEnumerable;
 const __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 const __spreadValues = (a, b) => {
-  for (let prop in b || (b = {}))
+  for (const prop in b || (b = {}))
     if (__hasOwnProp.call(b, prop))
       __defNormalProp(a, prop, b[prop]);
   if (__getOwnPropSymbols)
-    for (let prop of __getOwnPropSymbols(b)) {
+    for (const prop of __getOwnPropSymbols(b)) {
       if (__propIsEnum.call(b, prop))
         __defNormalProp(a, prop, b[prop]);
     }
@@ -35,21 +35,21 @@ const __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__
 ));
 const __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
-    let fulfilled = (value) => {
+    const fulfilled = (value) => {
       try {
         step(generator.next(value));
       } catch (e) {
         reject(e);
       }
     };
-    let rejected = (value) => {
+    const rejected = (value) => {
       try {
         step(generator.throw(value));
       } catch (e) {
         reject(e);
       }
     };
-    let step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    const step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
@@ -57,7 +57,7 @@ const __async = (__this, __arguments, generator) => {
 const API_BASE = "https://api3.aoneroom.com";
 const KEY_B64_DEFAULT = "NzZpUmwwN3MweFNOOWpxbUVXQXQ3OUVCSlp1bElRSXNWNjRGWnIyTw==";
 const KEY_B64_ALT = "WHFuMm5uTzQxL0w5Mm8xaXVYaFNMSFRiWHZZNFo1Wlo2Mm04bVNMQQ==";
-const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
+const TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 const BRAND_MODELS = {
   "Samsung": ["SM-S918B", "SM-A528B", "SM-M336B"],
@@ -72,6 +72,19 @@ const PACKAGE_INFO = {
   version_code: 50020042
 };
 
+function ensureHttps(url) {
+  if (typeof url !== "string") {
+    return null;
+  }
+  if (url.startsWith("http://")) {
+    return url.replace("http://", "https://");
+  }
+  if (!url.startsWith("https://")) {
+    return null;
+  }
+  return url;
+}
+
 const import_crypto_js = __toESM(require("crypto-js"));
 const SECRET_KEY_DEFAULT = import_crypto_js.default.enc.Base64.parse(
   import_crypto_js.default.enc.Base64.parse(KEY_B64_DEFAULT).toString(import_crypto_js.default.enc.Utf8)
@@ -82,9 +95,59 @@ const SECRET_KEY_ALT = import_crypto_js.default.enc.Base64.parse(
 let deviceId = "";
 let selectedBrand = "";
 let selectedModel = "";
+let bearerToken = null;
+
+function decodeJwtExpiry(token) {
+  try {
+    const parts = token.split(".");
+    if (parts.length < 2)
+      return 0;
+    let base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    while (base64.length % 4) {
+      base64 += "=";
+    }
+    const parsed = import_crypto_js.default.enc.Base64.parse(base64).toString(import_crypto_js.default.enc.Utf8);
+    const json = JSON.parse(parsed);
+    return json.exp || 0;
+  } catch (e) {
+    return 0;
+  }
+}
+
+function isTokenValid(token) {
+  if (!token)
+    return false;
+  const exp = decodeJwtExpiry(token);
+  return exp > Date.now() / 1e3 + 3600;
+}
+
+function getCachedToken() {
+  return __async(this, null, function* () {
+    if (isTokenValid(bearerToken))
+      return bearerToken;
+    const url = `${API_BASE}/wefeed-mobile-bff/tab/ranking-list?tabId=0&categoryType=4516404531735022304&page=1&perPage=1`;
+    const res = yield mavonyxRequest("GET", url, null, {}, true);
+    if (res && res.headers) {
+      const xUser = res.headers.get("x-user");
+      if (xUser) {
+        try {
+          const xUserJson = JSON.parse(xUser);
+          const token = xUserJson.token;
+          if (token && isTokenValid(token)) {
+            bearerToken = token;
+            return token;
+          }
+        } catch (e) {
+        }
+      }
+    }
+    return bearerToken || "";
+  });
+}
+
 function initializeSession() {
   if (!deviceId) {
-    let chars = "0123456789abcdef";
+    const chars = "0123456789abcdef";
     for (let i = 0; i < 32; i++) {
       deviceId += chars[Math.floor(Math.random() * 16)];
     }
@@ -94,18 +157,22 @@ function initializeSession() {
     selectedModel = models[Math.floor(Math.random() * models.length)];
   }
 }
+
 function md5(input) {
   return import_crypto_js.default.MD5(input).toString(import_crypto_js.default.enc.Hex);
 }
+
 function hmacMd5(key, data) {
   return import_crypto_js.default.HmacMD5(data, key).toString(import_crypto_js.default.enc.Base64);
 }
+
 function generateXClientToken(timestamp) {
   const ts = (timestamp || Date.now()).toString();
   const reversed = ts.split("").reverse().join("");
   const hash = md5(reversed);
   return `${ts},${hash}`;
 }
+
 function buildCanonicalString(method, accept, contentType, url, body, timestamp) {
   let path = "";
   let query = "";
@@ -138,14 +205,9 @@ function buildCanonicalString(method, accept, contentType, url, body, timestamp)
     bodyHash = md5(bodyWords);
     bodyLength = totalBytes.toString();
   }
-  return `${method.toUpperCase()}
-${accept || ""}
-${contentType || ""}
-${bodyLength}
-${timestamp}
-${bodyHash}
-` + canonicalUrl;
+  return `${method.toUpperCase()}\n${accept || ""}\n${contentType || ""}\n${bodyLength}\n${timestamp}\n${bodyHash}\n` + canonicalUrl;
 }
+
 function generateXTrSignature(method, accept, contentType, url, body, useAltKey = false, customTimestamp = null) {
   const timestamp = customTimestamp || Date.now();
   const canonical = buildCanonicalString(method, accept, contentType, url, body, timestamp);
@@ -153,14 +215,19 @@ function generateXTrSignature(method, accept, contentType, url, body, useAltKey 
   const signatureB64 = hmacMd5(secret, canonical);
   return `${timestamp}|2|${signatureB64}`;
 }
+
 function mavonyxRequest(_0, _1) {
-  return __async(this, arguments, function*(method, url, body = null, customHeaders = {}) {
+  return __async(this, arguments, function* (method, url, body = null, customHeaders = {}, isTokenFetch = false) {
     initializeSession();
+    const validatedUrl = ensureHttps(url);
+    if (!validatedUrl) {
+      return null;
+    }
     const timestamp = Date.now();
     const xClientToken = generateXClientToken(timestamp);
     const headerContentType = customHeaders["Content-Type"] || (body ? "application/json; charset=utf-8" : "application/json");
     const accept = customHeaders["Accept"] || "application/json";
-    const xTrSignature = generateXTrSignature(method, accept, headerContentType, url, body, false, timestamp);
+    const xTrSignature = generateXTrSignature(method, accept, headerContentType, validatedUrl, body, false, timestamp);
     const xClientInfo = JSON.stringify(__spreadProps(__spreadValues({}, PACKAGE_INFO), {
       os: "android",
       os_version: "16",
@@ -184,6 +251,12 @@ function mavonyxRequest(_0, _1) {
       "x-client-info": xClientInfo,
       "x-client-status": "0"
     }, customHeaders);
+    if (!isTokenFetch) {
+      const token = yield getCachedToken();
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+    }
     const options = {
       method,
       headers
@@ -194,7 +267,7 @@ function mavonyxRequest(_0, _1) {
     let retries = 2;
     while (retries > 0) {
       try {
-        const res = yield fetch(url, options);
+        const res = yield fetch(validatedUrl, options);
         if (!res.ok) {
           if (res.status === 403 || res.status === 429) {
             retries--;
@@ -209,6 +282,19 @@ function mavonyxRequest(_0, _1) {
           parsed = JSON.parse(text);
         } catch (e) {
           parsed = text;
+        }
+        if (res.headers) {
+          const xUser = res.headers.get("x-user");
+          if (xUser) {
+            try {
+              const xUserJson = JSON.parse(xUser);
+              const token = xUserJson.token;
+              if (token && isTokenValid(token)) {
+                bearerToken = token;
+              }
+            } catch (e) {
+            }
+          }
         }
         return {
           data: parsed,
@@ -225,11 +311,12 @@ function mavonyxRequest(_0, _1) {
     return null;
   });
 }
+
 function fetchTmdbDetails(tmdbId, mediaType) {
-  return __async(this, null, function*() {
+  return __async(this, null, function* () {
     try {
       const url = `${TMDB_BASE_URL}/${mediaType}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
-      const res = yield fetch(url, {
+      const res = yield fetch(ensureHttps(url), {
         headers: {
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
           "Accept": "application/json",
@@ -240,7 +327,7 @@ function fetchTmdbDetails(tmdbId, mediaType) {
       return {
         title: mediaType === "movie" ? data.title || data.original_title : data.name || data.original_name,
         year: (data.release_date || data.first_air_date || "").substring(0, 4),
-        imdbId: data.external_ids?.imdb_id,
+        imdbId: data.external_ids ? data.external_ids.imdb_id : null,
         originalTitle: data.original_title || data.original_name
       };
     } catch (e) {
@@ -248,15 +335,18 @@ function fetchTmdbDetails(tmdbId, mediaType) {
     }
   });
 }
+
 function normalizeTitle(s) {
   if (!s)
     return "";
-  return s.replace(/\[.*?\]/g, " ").replace(/\(.*?|/g, " ").replace(/\b(dub|dubbed|hd|4k|hindi|tamil|telugu|dual audio)\b/gi, " ").trim().toLowerCase().replace(/:/g, " ").replace(/[^\w\s]/g, " ").replace(/\s+/g, " ");
+  return s.replace(/\[.*?\]/g, " ").replace(/\(.*?|\)/g, " ").replace(/\b(dub|dubbed|hd|4k|hindi|tamil|telugu|dual audio)\b/gi, " ").trim().toLowerCase().replace(/:/g, " ").replace(/[^\w\s]/g, " ").replace(/\s+/g, " ");
 }
+
 function parseQualityNumber(value) {
   const match = String(value || "").match(/(\d{3,4})/);
   return match ? parseInt(match[1], 10) : 0;
 }
+
 function getFormatType(url) {
   const u = String(url || "").toLowerCase();
   if (u.includes(".mpd"))
@@ -271,7 +361,7 @@ function getFormatType(url) {
 }
 
 function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
-  return __async(this, null, function*() {
+  return __async(this, null, function* () {
     const details = yield fetchTmdbDetails(tmdbId, mediaType);
     if (!details)
       return [];
@@ -290,8 +380,9 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
     return [];
   });
 }
+
 function searchMavonyx(query) {
-  return __async(this, null, function*() {
+  return __async(this, null, function* () {
     const url = `${API_BASE}/wefeed-mobile-bff/subject-api/search/v2`;
     const body = JSON.stringify({ page: 1, perPage: 20, keyword: query });
     const response = yield mavonyxRequest("POST", url, body);
@@ -307,6 +398,7 @@ function searchMavonyx(query) {
     return [];
   });
 }
+
 function findBestMatch(subjects, tmdbTitle, tmdbYear, mediaType) {
   const normTmdbTitle = normalizeTitle(tmdbTitle);
   const targetType = mediaType === "movie" ? 1 : 2;
@@ -334,21 +426,14 @@ function findBestMatch(subjects, tmdbTitle, tmdbYear, mediaType) {
     return bestMatch;
   return null;
 }
+
 function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", mediaType = "movie") {
-  return __async(this, null, function*() {
+  return __async(this, null, function* () {
     const subjectUrl = `${API_BASE}/wefeed-mobile-bff/subject-api/get?subjectId=${subjectId}`;
     const detailRes = yield mavonyxRequest("GET", subjectUrl);
     if (!detailRes || !detailRes.data || !detailRes.data.data)
       return [];
-    const xUserHeader = detailRes.headers ? detailRes.headers.get("x-user") : null;
-    let token = null;
-    if (xUserHeader) {
-      try {
-        const xUserJson = JSON.parse(xUserHeader);
-        token = xUserJson.token;
-      } catch (e) {
-      }
-    }
+
     const subjectIds = [];
     let originalLang = "Original";
     const dubs = detailRes.data.data.dubs;
@@ -362,7 +447,6 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
       });
     }
     subjectIds.unshift({ id: subjectId, lang: originalLang });
-    const authHeaders = token ? { "Authorization": `Bearer ${token}` } : {};
 
     const allowedLangs = ["bengali", "original", "english", "hindi"];
     const filteredSubjectIds = subjectIds.filter((item) => {
@@ -374,7 +458,7 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
     for (const item of filteredSubjectIds) {
       try {
         const playUrl = `${API_BASE}/wefeed-mobile-bff/subject-api/play-info?subjectId=${item.id}&se=${season}&ep=${episode}`;
-        const playRes = yield mavonyxRequest("GET", playUrl, null, authHeaders);
+        const playRes = yield mavonyxRequest("GET", playUrl, null);
         if (playRes && playRes.data && playRes.data.data) {
           const playData = playRes.data.data;
           const streamsList = playData.streams;
@@ -382,29 +466,30 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
             for (const stream of streamsList) {
               if (!stream.url)
                 continue;
-
-              if (!stream.url.startsWith("https://"))
+              
+              const secureUrl = ensureHttps(stream.url);
+              if (!secureUrl)
                 continue;
 
-              const formatType = getFormatType(stream.url);
+              const formatType = getFormatType(secureUrl);
               const qualLabel = stream.resolutions || stream.quality || "Auto";
-              const qualNum = parseQualityNumber(qualLabel);
+              const qualNumMain = parseQualityNumber(qualLabel);
 
-              if (qualNum < 1080)
+              if (qualNumMain < 1080)
                 continue;
 
-              const quality = qualNum ? `${qualNum}p` : "Auto";
+              const quality = qualNumMain ? `${qualNumMain}p` : "Auto";
               const streamId = stream.id || `${item.id}|${season}|${episode}`;
-              const subtitles = yield fetchSubtitles(item.id, streamId, authHeaders, item.lang);
+              const subtitles = yield fetchSubtitles(item.id, streamId, item.lang);
 
               const streamTitle = `Mavonyx. • ${item.lang} • ${formatType}`;
 
               allStreams.push({
                 name: streamTitle,
                 title: streamTitle,
-                url: stream.url,
+                url: secureUrl,
                 quality,
-                qualityNum: qualNum,
+                qualityNum: qualNumMain,
                 headers: __spreadValues({
                   "Referer": API_BASE,
                   "User-Agent": `com.community.mbox.in/50020042 (Linux; U; Android 16; en_IN; MovieBox; Build/BP22.250325.006; Cronet/133.0.6876.3)`
@@ -420,24 +505,25 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
                   if (!video.resourceLink)
                     continue;
 
-                  if (!video.resourceLink.startsWith("https://"))
+                  const secureUrl = ensureHttps(video.resourceLink);
+                  if (!secureUrl)
                     continue;
 
-                  const qualNum = parseQualityNumber(video.resolution);
+                  const qualNumVideo = parseQualityNumber(video.resolution);
 
-                  if (qualNum < 1080)
+                  if (qualNumVideo < 1080)
                     continue;
 
-                  const quality = qualNum ? `${qualNum}p` : "Auto";
-                  const formatType = getFormatType(video.resourceLink);
+                  const quality = qualNumVideo ? `${qualNumVideo}p` : "Auto";
+                  const formatType = getFormatType(secureUrl);
                   const fallbackTitle = `Mavonyx. • ${item.lang} • ${formatType}`;
 
                   allStreams.push({
                     name: fallbackTitle,
                     title: fallbackTitle,
-                    url: video.resourceLink,
+                    url: secureUrl,
                     quality,
-                    qualityNum: qualNum,
+                    qualityNum: qualNumVideo,
                     headers: {
                       "Referer": API_BASE,
                       "User-Agent": `com.community.mbox.in/50020042 (Linux; U; Android 16; en_IN; MovieBox; Build/BP22.250325.006; Cronet/133.0.6876.3)`
@@ -460,17 +546,21 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
     return allStreams;
   });
 }
-function fetchSubtitles(subjectId, streamId, authHeaders, langLabel) {
-  return __async(this, null, function*() {
+
+function fetchSubtitles(subjectId, streamId, langLabel) {
+  return __async(this, null, function* () {
     const subtitles = [];
     try {
       const streamCapUrl = `${API_BASE}/wefeed-mobile-bff/subject-api/get-stream-captions?subjectId=${subjectId}&streamId=${streamId}`;
-      const capRes = yield mavonyxRequest("GET", streamCapUrl, null, authHeaders);
+      const capRes = yield mavonyxRequest("GET", streamCapUrl, null);
       if (capRes && capRes.data && capRes.data.data && Array.isArray(capRes.data.data.extCaptions)) {
         capRes.data.data.extCaptions.forEach((cap) => {
           if (cap.url) {
+            const secureUrl = ensureHttps(cap.url);
+            if (!secureUrl)
+              return;
             subtitles.push({
-              url: cap.url,
+              url: secureUrl,
               language: cap.language || cap.lanName || cap.lan || "en",
               name: `${cap.lanName || cap.language || "Subtitle"} (${langLabel})`,
               headers: { "Referer": API_BASE }
@@ -482,12 +572,15 @@ function fetchSubtitles(subjectId, streamId, authHeaders, langLabel) {
     }
     try {
       const extCapUrl = `${API_BASE}/wefeed-mobile-bff/subject-api/get-ext-captions?subjectId=${subjectId}&resourceId=${streamId}&episode=0`;
-      const extRes = yield mavonyxRequest("GET", extCapUrl, null, authHeaders);
+      const extRes = yield mavonyxRequest("GET", extCapUrl, null);
       if (extRes && extRes.data && extRes.data.data && Array.isArray(extRes.data.data.extCaptions)) {
         extRes.data.data.extCaptions.forEach((cap) => {
           if (cap.url) {
+            const secureUrl = ensureHttps(cap.url);
+            if (!secureUrl)
+              return;
             subtitles.push({
-              url: cap.url,
+              url: secureUrl,
               language: cap.lan || cap.lanName || cap.language || "en",
               name: `${cap.lanName || cap.lan || "Subtitle"} (${langLabel})`,
               headers: { "Referer": API_BASE }
@@ -500,4 +593,5 @@ function fetchSubtitles(subjectId, streamId, authHeaders, langLabel) {
     return subtitles;
   });
 }
+
 module.exports = { getStreams };
