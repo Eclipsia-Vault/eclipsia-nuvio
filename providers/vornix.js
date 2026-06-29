@@ -13,7 +13,7 @@ const __async = (__this, __arguments, generator) => {
   });
 };
 
-const ECLIPSIA_API = "https://pengu.uk";
+const VORNIX_API = "https://beta.pengu.uk/%7B%22source_vaplayer%22%3A%22on%22%2C%22source_vidking%22%3A%22on%22%2C%22quality_floor%22%3A%224K%20only%22%7D";
 const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 
 const HEADERS = {
@@ -113,16 +113,16 @@ function buildStream(item) {
 
     if (!streamUrl) return null;
 
-    const nameParts = ["Eclipsia."];
+    const nameParts = ["Vornix."];
     if (language !== "Default") nameParts.push(language);
 
     return {
       name: nameParts.join(" • "),
       title: quality,
       url: streamUrl,
-      quality,
+      quality: "2160p • 4K",
       ...(Object.keys(headers).length > 0 ? { headers } : {}),
-      provider: "Eclipsia.",
+      provider: "Vornix",
     };
   });
 }
@@ -179,12 +179,12 @@ function getStreams(tmdbId, mediaType, season, episode) {
       if (!imdbId) return [];
 
       if (!isSeries) {
-        return yield fetchStreams(`${ECLIPSIA_API}/stream/movie/${imdbId}.json`);
+        return yield fetchStreams(`${VORNIX_API}/stream/movie/${imdbId}.json`);
       }
 
       return yield fetchFirstValid([
-        `${ECLIPSIA_API}/stream/series/${imdbId}:${pad2(s)}:${pad2(e)}.json`,
-        `${ECLIPSIA_API}/stream/series/${imdbId}:${parseInt(s, 10) || 1}:${parseInt(e, 10) || 1}.json`,
+        `${VORNIX_API}/stream/series/${imdbId}:${pad2(s)}:${pad2(e)}.json`,
+        `${VORNIX_API}/stream/series/${imdbId}:${parseInt(s, 10) || 1}:${parseInt(e, 10) || 1}.json`,
       ]);
     } catch {
       return [];
