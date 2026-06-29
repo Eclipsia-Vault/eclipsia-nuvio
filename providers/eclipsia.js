@@ -133,7 +133,7 @@ function parseStreams(data) {
 
     const validItems = data.streams.filter((item) => {
       const cleanedTitle = cleanText(item?.title);
-      if (!cleanedTitle.toLowerCase().includes("original")) return false;
+      if (!cleanedTitle.toLowerCase().includes("original audio")) return false;
       if (typeof item?.url !== "string" || !item.url.startsWith("https")) return false;
 
       const innerMatch = item.url.match(/[?&]url=(https?:\/\/[^&]+)/);
