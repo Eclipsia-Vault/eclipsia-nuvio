@@ -13,7 +13,7 @@ const __async = (__this, __arguments, generator) => {
   });
 };
 
-const PYNVIX_API = "https://moviebox-cfa7.onrender.com";
+const PYNVIX_API = "https://pengu.uk";
 const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 
 const HEADERS = {
@@ -24,21 +24,31 @@ const pad2 = (n) => String(Number.parseInt(n ?? 0, 10) || 0).padStart(2, "0");
 
 const cleanText = (str) =>
   String(str ?? "")
-    .replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]/gu, "")
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}]/gu, "")
     .trim();
 
-const extractQuality = (titleText) => {
-  const match = String(titleText ?? "").match(/(\d{3,4}p)/i);
-  return match?.[0] ?? "Unknown";
+const extractSourceName = (rawName) => {
+  const cleaned = cleanText(rawName);
+  const lines = cleaned.split("\n").map((l) => l.trim()).filter(Boolean);
+  const words = lines[0]?.split(/\s+/).filter(Boolean) || [];
+  return words.filter((w) => !/^[$@#~%^&*()+=\[\]{}|:";'<>?,./!]+$/.test(w))[0] || "Unknown";
 };
 
-const extractLanguage = (cleanedTitle) => {
-  const parts = String(cleanedTitle ?? "").split("|");
-  if (parts.length < 2) return "Default";
-  const raw = parts[parts.length - 1].trim();
-  return raw === ""
-    ? "Default"
-    : raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+const extractQualitySpecs = (description) => {
+  const lines = String(description ?? "").split("\n");
+  const specLine = lines.find((l) => l.includes("🎞")) || "";
+  const cleaned = cleanText(specLine);
+  if (!cleaned) return "Unknown";
+  const parts = cleaned.split("•").map((p) => p.trim()).filter(Boolean);
+  const containers = ["mp4", "mkv", "avi", "mov", "flv", "ts"];
+  if (containers.includes(parts[parts.length - 1]?.toLowerCase())) {
+    parts.pop();
+  }
+  return parts.join(" • ") || cleaned;
+};
+
+const is1080pOnly = (qualityStr) => {
+  return String(qualityStr ?? "").includes("1080p") && !String(qualityStr ?? "").includes("2160p") && !String(qualityStr ?? "").includes("4k");
 };
 
 const isProxyUrl = (url) =>
@@ -87,8 +97,7 @@ function resolveProxyUrl(url) {
 }
 
 const detectStreamType = (url) => {
-  if (!url)
-    return "video";
+  if (!url) return "video";
   const lower = String(url).toLowerCase().split("?")[0];
   return lower.includes(".m3u8") ? "m3u8" : "video";
 };
@@ -98,9 +107,11 @@ function buildStream(item) {
     if (!item?.url || item.externalUrl) return null;
     if (String(item.url).includes("github.com")) return null;
 
-    const cleanedTitle = cleanText(item.title);
-    const quality = extractQuality(cleanedTitle);
-    const language = extractLanguage(cleanedTitle);
+    const descToParse = item.description || item.title || "";
+    const sourceName = extractSourceName(item.name);
+    const qualitySpecs = extractQualitySpecs(descToParse);
+
+    if (!is1080pOnly(qualitySpecs)) return null;
 
     const headers = {
       ...(item.behaviorHints?.proxyHeaders?.request ?? {}),
@@ -113,16 +124,13 @@ function buildStream(item) {
 
     if (!streamUrl) return null;
 
-    const nameParts = ["Pynvix."];
-    if (language !== "Default") nameParts.push(language);
-
     return {
-      name: nameParts.join(" • "),
-      title: quality,
+      name: "Pynvix.",
+      title: `Pynvix • ${sourceName}`,
       url: streamUrl,
-      quality,
+      quality: qualitySpecs,
       ...(Object.keys(headers).length > 0 ? { headers } : {}),
-      provider: "Pynvix.",
+      provider: "Pynvix",
     };
   });
 }
