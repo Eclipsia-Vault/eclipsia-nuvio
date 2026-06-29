@@ -1,4 +1,3 @@
-const TMDB_API_KEY = '6e6ab700b6477171ee6c23d504b1e9cb';
 const __create = Object.create;
 const __defProp = Object.defineProperty;
 const __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -7,21 +6,18 @@ const __getOwnPropSymbols = Object.getOwnPropertySymbols;
 const __getProtoOf = Object.getPrototypeOf;
 const __hasOwnProp = Object.prototype.hasOwnProperty;
 const __propIsEnum = Object.prototype.propertyIsEnumerable;
-
 const __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-
 const __spreadValues = (a, b) => {
-  for (const prop in b || (b = {}))
+  for (let prop in b || (b = {}))
     if (__hasOwnProp.call(b, prop))
       __defNormalProp(a, prop, b[prop]);
   if (__getOwnPropSymbols)
-    for (const prop of __getOwnPropSymbols(b)) {
+    for (let prop of __getOwnPropSymbols(b)) {
       if (__propIsEnum.call(b, prop))
         __defNormalProp(a, prop, b[prop]);
     }
   return a;
 };
-
 const __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -30,22 +26,20 @@ const __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-
 const __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-
 const __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
+    const fulfilled = (value) => {
       try {
         step(generator.next(value));
       } catch (e) {
         reject(e);
       }
     };
-    var rejected = (value) => {
+    const rejected = (value) => {
       try {
         step(generator.throw(value));
       } catch (e) {
@@ -64,6 +58,7 @@ const HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/149.0.0.0 Safari/537.36",
   "Referer": "https://anizone.to/"
 };
+const TMDB_API_KEY = '1865f43a0549ca50d341dd9ab8b29f49';
 
 function fetchText(_0) {
   return __async(this, arguments, function* (url, options = {}) {
@@ -80,11 +75,10 @@ function fetchText(_0) {
     }
   });
 }
-
 function getImdbId(tmdbId, mediaType) {
   return __async(this, null, function* () {
     try {
-      const url = `https://api.themoviedb.org/3/${mediaType === "tv" ? "tv" : "movie"}/${tmdbId}/external_ids?api_key=TMDB_API_KEY`;
+      const url = `https://api.themoviedb.org/3/${mediaType === "tv" ? "tv" : "movie"}/${tmdbId}/external_ids?api_key=${TMDB_API_KEY}`;
       const res = yield fetch(url, { headers: HEADERS });
       if (!res.ok)
         return null;
@@ -95,7 +89,6 @@ function getImdbId(tmdbId, mediaType) {
     }
   });
 }
-
 function resolveMapping(imdbId, season, episode) {
   return __async(this, null, function* () {
     try {
@@ -109,7 +102,6 @@ function resolveMapping(imdbId, season, episode) {
     }
   });
 }
-
 function getMalTitle(malId) {
   return __async(this, null, function* () {
     try {
@@ -153,11 +145,9 @@ function extractCardInfo($, el) {
     titles: Array.from(titles)
   };
 }
-
 function normalize(str) {
   return str.toLowerCase().replace(/[^a-z0-9]/g, "").trim();
 }
-
 function getSeasonRegexes(season) {
   if (season === 1) {
     return {
@@ -176,7 +166,6 @@ function getSeasonRegexes(season) {
   }
   return { must: patterns };
 }
-
 function matchCard(cards, jikanTitle, baseTitle, season) {
   const normalizedJikan = normalize(jikanTitle);
   const normalizedJikanNoSub = normalize(jikanTitle.split(":")[0]);
@@ -225,7 +214,6 @@ function matchCard(cards, jikanTitle, baseTitle, season) {
   }
   return null;
 }
-
 function matchMovieCard(cards, targetTitle) {
   const normTarget = normalize(targetTitle);
   for (const card of cards) {
@@ -242,7 +230,6 @@ function matchMovieCard(cards, targetTitle) {
   }
   return cards[0].slug;
 }
-
 function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
     try {
@@ -259,7 +246,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
         mappedEp = mapping.mal_episode || episode;
         animeTitle = yield getMalTitle(mapping.mal_id);
       } else {
-        const tmdbUrl = `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=TMDB_API_KEY`;
+        const tmdbUrl = `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}`;
         const tmdbRes = yield fetch(tmdbUrl);
         const tmdbData = yield tmdbRes.json();
         animeTitle = tmdbData.title || tmdbData.original_title;
@@ -367,5 +354,4 @@ function getStreams(tmdbId, mediaType, season, episode) {
     }
   });
 }
-
 module.exports = { getStreams };
