@@ -480,7 +480,7 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
               if (qualNumMain < 1080)
                 continue;
 
-              const quality = qualNumMain ? `${qualNumMain}p` : "Auto" ` • ${formatType}`;
+              const quality = `${qualNumMain ? `${qualNumMain}p` : "Auto"} • ${formatType}`;
               const streamId = stream.id || `${item.id}|${season}|${episode}`;
               const subtitles = yield fetchSubtitles(item.id, streamId, item.lang);
 
