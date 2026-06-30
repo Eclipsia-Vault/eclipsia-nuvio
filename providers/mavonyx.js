@@ -516,7 +516,7 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
                   if (qualNumVideo < 1080)
                     continue;
 
-                  const quality = qualNumVideo ? `${qualNumVideo}p` : "Auto";
+                  const quality = `${qualNumMain ? `${qualNumMain}p` : "Auto"} • ${formatType}`;
                   const formatType = getFormatType(secureUrl);
                   const fallbackTitle = `Mavonyx. • ${item.lang} • ${formatType}`;
 
@@ -524,7 +524,7 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
                     name: fallbackTitle,
                     title: fallbackTitle,
                     url: secureUrl,
-                    quality `• ${formatType}`,
+                    quality,
                     qualityNum: qualNumVideo,
                     headers: {
                       "Referer": API_BASE,
