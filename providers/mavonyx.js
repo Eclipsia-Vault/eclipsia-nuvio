@@ -480,24 +480,24 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
               if (qualNumMain < 1080)
                 continue;
 
-              const quality = qualNumMain ? `${qualNumMain}p` : "Auto";
+              const quality = qualNumMain ? `${qualNumMain}p` : "Auto" ` • ${formatType}`;
               const streamId = stream.id || `${item.id}|${season}|${episode}`;
               const subtitles = yield fetchSubtitles(item.id, streamId, item.lang);
 
-              const streamTitle = `Mavonyx. • ${item.lang} • ${formatType}`;
+              const streamTitle = `Mavonyx. • ${item.lang}`;
 
               allStreams.push({
                 name: streamTitle,
                 title: streamTitle,
                 url: secureUrl,
-                quality: `quality • ${formatType}`,
+                quality,
                 qualityNum: qualNumMain,
                 headers: __spreadValues({
                   "Referer": API_BASE,
                   "User-Agent": `com.community.mbox.in/50020042 (Linux; U; Android 16; en_IN; MovieBox; Build/BP22.250325.006; Cronet/133.0.6876.3)`
                 }, stream.signCookie ? { "Cookie": stream.signCookie } : {}),
                 subtitles,
-                provider: "moviebox"
+                provider: "mavonyx"
               });
             }
           } else if (Array.isArray(playData.resourceDetectors)) {
