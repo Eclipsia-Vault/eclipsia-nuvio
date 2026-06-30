@@ -1,6 +1,7 @@
 # Eclipsia
 
 A Curated Collection of Providers for **[Nuvio](https://github.com/NuvioMedia)**.
+<br>Visit site for details: **[Eclipsia](https://eclipsia.statichost.page)**
 
 # **Installation**
 
