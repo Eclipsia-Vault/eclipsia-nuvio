@@ -22,22 +22,6 @@ A Curated Collection of Providers for **[Nuvio](https://github.com/NuvioMedia)**
 <p align="justify">
 This project is provided for educational and informational purposes only; users are solely responsible for ensuring their use complies with all applicable laws, regulations, and professional standards. The authors, contributors, and distributors make no warranties—express or implied—and disclaim liability for any direct, indirect, incidental, consequential, or other damages arising from use of the project. Before relying on the project for operational, legal, or commercial purposes, obtain independent professional advice and verify compliance with local requirements.</p>
 
-# **Scrapers** 
-
-| Name | Provider | Content | Language | Status | Notes |
-|---|---|---|---|---|---|
-| Eclipsia. | NoTorrent | Movies & TV Shows | English | Enabled | Only English |
-| Soryn. | Netmirror | Movies & TV Shows | English, Hindi | Enabled | Requires VPN to work in some regions |
-| Vornix. | PenguPlay (4k) | Movies & TV Shows | English | Enabled | 4K Content Only |
-| Onyxia. | AniZone | Subbed & Dubbed Anime | English, Japanese | Enabled | Only Anime |
-| Novus. | CineFreak | Movies & TV Shows | Bangla, English, Hindi | Enabled | Less TV Shows |
-| Mavonyx. | MovieBox | Movies, TV Shows & Anime | English, Bangla, Hindi | Enabled | Supports MP4, DASH |
-| Pynvix. | PenguPlay (1080p) | Movies & TV Shows | Bangla, English, Hindi | Enabled | 1080p Content Only |
-| Solunix. | Stravo | Movies & TV Shows | English | Enabled | Only English, Download Friendly |
-| Nyxora. | Vidlink | Movies, TV Shows & Anime | English, Bangla, Hindi | Enabled | Requires VPN to work in some regions |
-| Karnis. | Castle | Movies & TV Shows | English, Hindi | Enabled | Some TV shows have mismatched languages |
-| Kryxalia. | AniNeko | Subbed & Dubbed Anime | English, Japanese | Disabled | Currently Not Working |
-
 # **License**
 
 This project is licensed under the GNU General Public License v3.0 - see the LICENSE file for details.
