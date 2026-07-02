@@ -13,7 +13,8 @@ const __async = (__this, __arguments, generator) => {
   });
 };
 
-const FASTRION_API = "https://addon-osvh.onrender.com";
+const ECLIPSIA_API = "https://addon.notorrent2.workers.dev";
+const ECLIPSIA_BACKUP_API = "https://addon-osvh.onrender.com";
 const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 
 const HEADERS = {
@@ -24,7 +25,7 @@ const pad2 = (n) => String(Number.parseInt(n ?? 0, 10) || 0).padStart(2, "0");
 
 const cleanText = (str) =>
   String(str ?? "")
-    .replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]/gu, "")
+    .replace(/[\u{1F300}-\u{1F9FF}]/gu, "")
     .trim();
 
 const extractQuality = (titleText) => {
@@ -36,13 +37,29 @@ const extractLanguage = (cleanedTitle) => {
   const langMatch = String(cleanedTitle ?? "").match(/\(([^)]+)\)/);
   if (!langMatch) return "Default";
   const raw = langMatch[1].trim();
-  return raw.toLowerCase() === "original audio"
-    ? "Default"
-    : raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+  const lowerRaw = raw.toLowerCase();
+
+  if (lowerRaw.includes("multi")) return "Multi";
+  if (lowerRaw === "original audio" || lowerRaw === "original") return "Original";
+
+  const emojiLang = cleanedTitle.match(/[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/);
+  if (emojiLang) {
+    const codeMap = {
+      'MX': 'Español',
+      'ES': 'Castellano',
+      'PT': 'Português',
+      'TR': 'Türkçe'
+    };
+    return codeMap[emojiLang[0]] || emojiLang[0];
+  }
+
+  return raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
 };
 
 const isProxyUrl = (url) =>
-  String(url ?? "").includes("workers.dev") || /[?&]url=/.test(String(url ?? ""));
+  String(url ?? "").includes("workers.dev") ||
+  /[?&](?:url|u)=/.test(String(url ?? "")) ||
+  /\/redirect\?p=/.test(String(url ?? ""));
 
 function getImdbId(tmdbId, mediaType) {
   return __async(this, null, function* () {
@@ -61,11 +78,23 @@ function getImdbId(tmdbId, mediaType) {
 
 function resolveProxyUrl(url) {
   return __async(this, null, function* () {
+    const innerParamMatch = String(url).match(/[?&](?:u|url)=(https?:\/\/[^&]+)/i);
+    if (innerParamMatch) {
+      return decodeURIComponent(innerParamMatch[1]);
+    }
+
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = yield fetch(url, {
         redirect: "follow",
-        headers: { ...HEADERS, "Referer": url },
+        signal: controller.signal,
+        headers: { ...HEADERS, "Referer": url.split("?")[0] },
       });
+
+      clearTimeout(timeoutId);
+
       const finalUrl = response.url;
       if ([".m3u8", ".mp4", ".mkv"].some((ext) => finalUrl.includes(ext))) {
         return finalUrl;
@@ -81,7 +110,7 @@ function resolveProxyUrl(url) {
       }
       return finalUrl || null;
     } catch {
-      return null;
+      return url;
     }
   });
 }
@@ -99,8 +128,9 @@ function buildStream(item) {
     if (String(item.url).includes("github.com")) return null;
 
     const cleanedTitle = cleanText(item.title);
-    const quality = extractQuality(cleanedTitle);
     const language = extractLanguage(cleanedTitle);
+    const isMulti = language === "Multi";
+    const quality = isMulti ? "1080p/4K" : extractQuality(cleanedTitle);
 
     const headers = {
       ...(item.behaviorHints?.proxyHeaders?.request ?? {}),
@@ -113,7 +143,7 @@ function buildStream(item) {
 
     if (!streamUrl) return null;
 
-    const nameParts = ["Fastrion."];
+    const nameParts = ["Eclipsia."];
     if (language !== "Default") nameParts.push(language);
 
     return {
@@ -122,7 +152,7 @@ function buildStream(item) {
       url: streamUrl,
       quality,
       ...(Object.keys(headers).length > 0 ? { headers } : {}),
-      provider: "Fastrion.",
+      provider: "Eclipsia.",
     };
   });
 }
@@ -133,11 +163,23 @@ function parseStreams(data) {
 
     const validItems = data.streams.filter((item) => {
       const cleanedTitle = cleanText(item?.title);
-      if (!cleanedTitle.toLowerCase().includes("original audio")) return false;
+      const titleLower = cleanedTitle.toLowerCase();
+
+      if (!titleLower.includes("multi") && !titleLower.includes("original")) return false;
+      if (!titleLower.includes("1080")) return false;
       if (typeof item?.url !== "string" || !item.url.startsWith("https")) return false;
 
-      const innerMatch = item.url.match(/[?&]url=(https?:\/\/[^&]+)/);
-      return !innerMatch || innerMatch[1].startsWith("https");
+      const innerParamMatch = item.url.match(/[?&](?:u|url)=(https?:\/\/[^&]+)/i);
+      return !innerParamMatch || innerParamMatch[1].startsWith("https");
+    });
+
+    // Sort before building: Original first, then Multi
+    validItems.sort((a, b) => {
+      const aOrig = cleanText(a.title).toLowerCase().includes("original");
+      const bOrig = cleanText(b.title).toLowerCase().includes("original");
+      if (aOrig && !bOrig) return -1;
+      if (!aOrig && bOrig) return 1;
+      return 0;
     });
 
     const streams = yield Promise.all(validItems.map(buildStream));
@@ -151,7 +193,25 @@ function fetchStreams(url) {
       const response = yield fetch(url);
       if (!response.ok) return [];
       const data = yield response.json();
-      return yield parseStreams(data);
+
+      const streams = yield parseStreams(data);
+
+      if (
+        streams.length === 0 &&
+        Array.isArray(data?.streams) &&
+        data.streams.some((s) => s?.externalUrl)
+      ) {
+        const freeTrialUrl = url.replace(ECLIPSIA_API, ECLIPSIA_BACKUP_API);
+        if (freeTrialUrl !== url) {
+          const trialResponse = yield fetch(freeTrialUrl);
+          if (trialResponse.ok) {
+            const trialData = yield trialResponse.json();
+            return yield parseStreams(trialData);
+          }
+        }
+      }
+
+      return streams;
     } catch {
       return [];
     }
@@ -179,12 +239,12 @@ function getStreams(tmdbId, mediaType, season, episode) {
       if (!imdbId) return [];
 
       if (!isSeries) {
-        return yield fetchStreams(`${FASTRION_API}/stream/movie/${imdbId}.json`);
+        return yield fetchStreams(`${ECLIPSIA_API}/stream/movie/${imdbId}.json`);
       }
 
       return yield fetchFirstValid([
-        `${FASTRION_API}/stream/series/${imdbId}:${pad2(s)}:${pad2(e)}.json`,
-        `${FASTRION_API}/stream/series/${imdbId}:${parseInt(s, 10) || 1}:${parseInt(e, 10) || 1}.json`,
+        `${ECLIPSIA_API}/stream/series/${imdbId}:${pad2(s)}:${pad2(e)}.json`,
+        `${ECLIPSIA_API}/stream/series/${imdbId}:${parseInt(s, 10) || 1}:${parseInt(e, 10) || 1}.json`,
       ]);
     } catch {
       return [];
