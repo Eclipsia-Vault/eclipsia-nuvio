@@ -48,7 +48,7 @@
       "version": "3.8.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
-      "filename": "providers/eclipsia.js",
+      "filename": "providers/fastrion.js",
       "enabled": true,
       "formats": ["mp4", "m3u8", "mkv"],
       "logo": "https://raw.githubusercontent.com/eclipsia-404/util-nuvio/refs/heads/main/icons/nm.png",
