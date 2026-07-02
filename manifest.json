@@ -42,30 +42,17 @@
       "contentLanguage": ["en", "ja"]
     },
     {
-      "id": "fastrion",
-      "name": "Fastrion.",
-      "description": "Provider: NoTorrent | English",
-      "version": "3.8.0",
+      "id": "pynvix",
+      "name": "Pynvix.",
+      "description": "Provider: Multi Providers (1080p) | English (1080p Only)",
+      "version": "1.6.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
-      "filename": "providers/fastrion.js",
+      "filename": "providers/pynvix.js",
       "enabled": true,
-      "formats": ["mp4", "m3u8", "mkv"],
+      "formats": ["m3u8", "mp4", "mkv"],
       "logo": "https://raw.githubusercontent.com/eclipsia-404/util-nuvio/refs/heads/main/icons/nm.png",
       "contentLanguage": ["en"]
-    },
-    {
-      "id": "novus",
-      "name": "Novus.",
-      "description": "Provider: CineFreak | Bangla, English, Hindi",
-      "version": "3.2.0",
-      "author": "Eclipsia",
-      "supportedTypes": ["movie", "tv"],
-      "filename": "providers/novus.js",
-      "enabled": true,
-      "formats": ["mkv", "mp4"],
-      "logo": "",
-      "contentLanguage": ["bn", "hi", "en"]
     },
     {
       "id": "mavonyx",
@@ -81,17 +68,17 @@
       "contentLanguage": ["en", "hi", "bn"]
     },
     {
-      "id": "pynvix",
-      "name": "Pynvix.",
-      "description": "Provider: Multi Providers (1080p) | English (1080p Only)",
-      "version": "1.6.0",
+      "id": "novus",
+      "name": "Novus.",
+      "description": "Provider: CineFreak | Bangla, English, Hindi",
+      "version": "3.2.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
-      "filename": "providers/pynvix.js",
+      "filename": "providers/novus.js",
       "enabled": true,
-      "formats": ["m3u8", "mp4", "mkv"],
+      "formats": ["mkv", "mp4"],
       "logo": "",
-      "contentLanguage": ["en"]
+      "contentLanguage": ["bn", "hi", "en"]
     },
     {
       "id": "solunix",
@@ -101,6 +88,19 @@
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/solunix.js",
+      "enabled": true,
+      "formats": ["mp4", "m3u8", "mkv"],
+      "logo": "",
+      "contentLanguage": ["en"]
+    },
+    {
+      "id": "fastrion",
+      "name": "Fastrion.",
+      "description": "Provider: NoTorrent | English",
+      "version": "3.8.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/fastrion.js",
       "enabled": true,
       "formats": ["mp4", "m3u8", "mkv"],
       "logo": "",
