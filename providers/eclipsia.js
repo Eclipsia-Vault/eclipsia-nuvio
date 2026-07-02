@@ -13,7 +13,7 @@ const __async = (__this, __arguments, generator) => {
   });
 };
 
-const ECLIPSIA_API = "https://addon-osvh.onrender.com";
+const FASTRION_API = "https://addon-osvh.onrender.com";
 const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 
 const HEADERS = {
@@ -113,7 +113,7 @@ function buildStream(item) {
 
     if (!streamUrl) return null;
 
-    const nameParts = ["Eclipsia."];
+    const nameParts = ["FASTRION."];
     if (language !== "Default") nameParts.push(language);
 
     return {
@@ -122,7 +122,7 @@ function buildStream(item) {
       url: streamUrl,
       quality,
       ...(Object.keys(headers).length > 0 ? { headers } : {}),
-      provider: "Eclipsia.",
+      provider: "Fastrion.",
     };
   });
 }
@@ -179,12 +179,12 @@ function getStreams(tmdbId, mediaType, season, episode) {
       if (!imdbId) return [];
 
       if (!isSeries) {
-        return yield fetchStreams(`${ECLIPSIA_API}/stream/movie/${imdbId}.json`);
+        return yield fetchStreams(`${FASTRION_API}/stream/movie/${imdbId}.json`);
       }
 
       return yield fetchFirstValid([
-        `${ECLIPSIA_API}/stream/series/${imdbId}:${pad2(s)}:${pad2(e)}.json`,
-        `${ECLIPSIA_API}/stream/series/${imdbId}:${parseInt(s, 10) || 1}:${parseInt(e, 10) || 1}.json`,
+        `${FASTRION_API}/stream/series/${imdbId}:${pad2(s)}:${pad2(e)}.json`,
+        `${FASTRION_API}/stream/series/${imdbId}:${parseInt(s, 10) || 1}:${parseInt(e, 10) || 1}.json`,
       ]);
     } catch {
       return [];
