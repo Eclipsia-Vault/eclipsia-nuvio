@@ -26,7 +26,7 @@
       "enabled": true,
       "formats": ["m3u8", "mp4", "mkv"],
       "logo": "https://raw.githubusercontent.com/eclipsia-404/util-nuvio/refs/heads/main/icons/cf.png",
-      "contentLanguage": ["en"]
+      "contentLanguage": ["en", "bn", "hi", "ja", "pt", "ar", "tr"]
     },
     {
       "id": "onyxia",
@@ -52,7 +52,7 @@
       "enabled": true,
       "formats": ["m3u8", "mp4", "mkv"],
       "logo": "https://raw.githubusercontent.com/eclipsia-404/util-nuvio/refs/heads/main/icons/nm.png",
-      "contentLanguage": ["en"]
+      "contentLanguage": ["en", "bn", "hi", "ja", "pt", "ar", "tr"]
     },
     {
       "id": "mavonyx",
