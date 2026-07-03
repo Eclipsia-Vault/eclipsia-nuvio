@@ -106,9 +106,18 @@ function extractQuality(item) {
   
   const parts = [];
   
-  const resMatch = combinedText.match(/\b(\d{3,4})p\b/i);
-  if (resMatch) {
-    parts.push(`${resMatch[1]}p`);
+  // Check for "4K" first, then numeric resolutions
+  let resolutionFound = false;
+  if (/4k\b/.test(combinedText)) {
+    parts.push('2160p');
+    resolutionFound = true;
+  }
+  
+  if (!resolutionFound) {
+    const resMatch = combinedText.match(/\b(\d{3,4})p\b/i);
+    if (resMatch) {
+      parts.push(`${resMatch[1]}p`);
+    }
   }
   
   const sourceTypes = ['web-dl', 'bluray', 'blu-ray', 'hdrrip', 'cam', 'ts', 'tc', 'webrip', 'hdtv'];
@@ -264,8 +273,13 @@ function buildStream(item) {
 
     if (!streamUrl) return null;
 
-    const resolutionMatch = quality.match(/\b(\d{3,4})p\b/i);
-    const resolution = resolutionMatch ? parseInt(resolutionMatch[1], 10) : 0;
+    let resolution = 0;
+    if (quality.includes('2160p') || /4k/i.test(item?.description || '') || /4k/i.test(item?.name || '')) {
+      resolution = 2160;
+    } else {
+      const resolutionMatch = quality.match(/\b(\d{3,4})p\b/i);
+      resolution = resolutionMatch ? parseInt(resolutionMatch[1], 10) : 0;
+    }
 
     const nameParts = ["Vornix"];
     if (providerName) nameParts.push(providerName);
