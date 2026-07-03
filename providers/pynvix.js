@@ -22,6 +22,7 @@ function buildConfig(token) {
     source_animesuge: 'on',
     source_aether: 'on',
     res_1080: 'on',
+    res_2160: 'on',
     auth_token: token
   };
 }
