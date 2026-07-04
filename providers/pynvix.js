@@ -225,7 +225,7 @@ function extractFebBoxShare(showboxId, mediaType, seasonNum, episodeNum, uiToken
             const normalizedQuality = getQualityFromName(qualityLabel);
             if (normalizedQuality !== "4K" && normalizedQuality !== "1080p") return;
             streams.push({
-              name: `Pynvix. • FebBox`,
+              name: `Pynvix. • FebBox [${normalizedQuality}]`,
               title: file.file_name,
               url: streamUrl,
               quality: normalizedQuality,
