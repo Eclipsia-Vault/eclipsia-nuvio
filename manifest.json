@@ -1,6 +1,6 @@
 {
   "name": "Eclipsia",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "scrapers": [
     {
       "id": "soryn",
@@ -45,7 +45,7 @@
       "id": "pynvix",
       "name": "Pynvix.",
       "description": "Provider: ShowBox",
-      "version": "1.6.0",
+      "version": "1.8.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/pynvix.js",
