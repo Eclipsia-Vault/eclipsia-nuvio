@@ -44,7 +44,7 @@
     {
       "id": "pynvix",
       "name": "Pynvix.",
-      "description": "Provider: ShowBox",
+      "description": "Provider: ShowBox | Multi-lang",
       "version": "1.8.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
