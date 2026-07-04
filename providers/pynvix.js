@@ -346,13 +346,6 @@ function onSettings() {
         label: "FebBox UI Token (Cookie)",
         placeholder: "ui=...",
         description: "Go to febbox.com, login, and copy your 'ui' cookie value from your browser."
-      },
-      {
-        type: "text",
-        key: "ossGroup",
-        label: "FebBox OSS Group (Optional)",
-        placeholder: "",
-        description: "Optional OSS group parameter."
       }
     ];
   });
