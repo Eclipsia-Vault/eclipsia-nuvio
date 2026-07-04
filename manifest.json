@@ -50,6 +50,7 @@
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/pynvix.js",
       "enabled": true,
+      "hasSettings": true,
       "formats": ["m3u8", "mp4", "mkv"],
       "logo": "https://raw.githubusercontent.com/eclipsia-404/util-nuvio/refs/heads/main/icons/nm.png",
       "contentLanguage": ["en", "bn", "hi", "ja", "pt", "ar"]
@@ -63,7 +64,6 @@
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/mavonyx.js",
       "enabled": true,
-      "hasSettings": true,
       "formats": ["mp4", "m3u8", "mpd"],
       "logo": "",
       "contentLanguage": ["en", "hi", "bn"]
