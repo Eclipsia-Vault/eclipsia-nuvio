@@ -15,7 +15,9 @@ const __async = (__this, __arguments, generator) => {
 
 function buildConfig(token) {
   return {
+    source_aether: 'on',
     source_vidking: 'on',
+    source_vaplayer: 'on',
     res_2160: 'on',
     auth_token: token
   };
@@ -97,18 +99,17 @@ const extractLanguage = (cleanedTitle) => {
 const isProxyUrl = (url) =>
   String(url ?? "").includes("workers.dev") || /[?&]url=/.test(String(url ?? ""));
 
-function hasPlayerHeader(item) {
-  const referer = item?.behaviorHints?.proxyHeaders?.request?.Referer ||
-                  item?.behaviorHints?.proxyHeaders?.request?.referer ||
-                  '';
-  const origin = item?.behaviorHints?.proxyHeaders?.request?.Origin ||
-                 item?.behaviorHints?.proxyHeaders?.request?.origin ||
-                 '';
+function isValidAudio(item) {
+  const desc = String(item?.description ?? "");
   
-  const lowerRef = referer.toLowerCase();
-  const lowerOrig = origin.toLowerCase();
+  if (!desc.includes("Audio:")) return true;
   
-  return lowerRef.includes('player') || lowerOrig.includes('player');
+  const match = desc.match(/Audio:\s*([^·]+)(?:$|·|$)/);
+  if (!match) return true;
+  
+  const audioValue = match[1].trim();
+  
+  return ['SUB', 'ENG'].includes(audioValue.toUpperCase());
 }
 
 function getImdbId(tmdbId, mediaType) {
@@ -199,7 +200,7 @@ function parseStreams(data) {
     if (!Array.isArray(data?.streams) || data.streams.length === 0) return [];
 
     const validItems = data.streams.filter((item) => {
-      if (!hasPlayerHeader(item)) return false;
+      if (!isValidAudio(item)) return false;
       
       const cleanedTitle = cleanText(item?.title);
       if (!cleanedTitle.toLowerCase().includes("")) return false;
