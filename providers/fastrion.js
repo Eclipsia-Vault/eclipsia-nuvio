@@ -13,8 +13,8 @@ const __async = (__this, __arguments, generator) => {
   });
 };
 
-const ECLIPSIA_API = "https://addon-osvh.onrender.com";
-const ECLIPSIA_BACKUP_API = "";
+const FASTRION_API = "https://addon.notorrent2.workers.dev";
+const FASTRION_BACKUP_API = "https://addon-osvh.onrender.com";
 const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 
 const HEADERS = {
@@ -33,8 +33,45 @@ const extractQuality = (titleText) => {
   return match?.[0] ?? "Unknown";
 };
 
+// Check if title has allowed resolution/quality markers: 1080p, 2160p (4K), or Multi
+const hasAllowedQuality = (titleText) => {
+  const str = String(titleText ?? "").toLowerCase();
+  // Allow: 1080p, 2160p, 4k, multi
+  return /\b(1080p|2160p|4[kK]|multi)\b/.test(str);
+};
+
+// Allowed languages besides Original and Multi
+const ALLOWED_LANGUAGES = ["Latino", "Português", "Castellano", "Türkçe"];
+
+const normalizeLanguageName = (raw) => {
+  const lowerRaw = raw.toLowerCase().trim();
+  
+  const languageMap = {
+    'latino': 'Latino',
+    'português': 'Português',
+    'portugues': 'Português',
+    'español': 'Castellano',
+    'spanish': 'Castellano',
+    'castellano': 'Castellano',
+    'türkçe': 'Türkçe',
+    'turkish': 'Türkçe'
+  };
+  
+  return languageMap[lowerRaw];
+};
+
 const extractLanguage = (cleanedTitle) => {
   const langMatch = String(cleanedTitle ?? "").match(/\(([^)]+)\)/);
+  
+  // Check for explicit audio language patterns like "Áudio Português", "Audio Español", etc.
+  const audioLangMatch = String(cleanedTitle ?? "").match(/\b[Aa]udio\s+([^\s\(\)]+)/i);
+  if (audioLangMatch && audioLangMatch[1]) {
+    const normalized = normalizeLanguageName(audioLangMatch[1]);
+    if (normalized && ALLOWED_LANGUAGES.includes(normalized)) {
+      return normalized;
+    }
+  }
+  
   if (!langMatch) return "Default";
   const raw = langMatch[1].trim();
   const lowerRaw = raw.toLowerCase();
@@ -45,15 +82,23 @@ const extractLanguage = (cleanedTitle) => {
   const emojiLang = cleanedTitle.match(/[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/);
   if (emojiLang) {
     const codeMap = {
-      'MX': 'Español',
+      'MX': 'Latino',
       'ES': 'Castellano',
       'PT': 'Português',
       'TR': 'Türkçe'
     };
-    return codeMap[emojiLang[0]] || emojiLang[0];
+    const mapped = codeMap[emojiLang[0]];
+    if (mapped && ALLOWED_LANGUAGES.includes(mapped)) {
+      return mapped;
+    }
   }
 
-  return raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+  const normalized = normalizeLanguageName(raw);
+  if (normalized && ALLOWED_LANGUAGES.includes(normalized)) {
+    return normalized;
+  }
+
+  return "Default";
 };
 
 const isProxyUrl = (url) =>
@@ -143,7 +188,7 @@ function buildStream(item) {
 
     if (!streamUrl) return null;
 
-    const nameParts = ["Eclipsia."];
+    const nameParts = ["Fastrion."];
     if (language !== "Default") nameParts.push(language);
 
     return {
@@ -152,7 +197,10 @@ function buildStream(item) {
       url: streamUrl,
       quality,
       ...(Object.keys(headers).length > 0 ? { headers } : {}),
-      provider: "Eclipsia.",
+      provider: "Fastrion.",
+      _isOriginal: language === "Original",
+      _isMulti: language === "Multi",
+      _language: language
     };
   });
 }
@@ -163,27 +211,72 @@ function parseStreams(data) {
 
     const validItems = data.streams.filter((item) => {
       const cleanedTitle = cleanText(item?.title);
-      const titleLower = cleanedTitle.toLowerCase();
-
-      if (!titleLower.includes("multi") && !titleLower.includes("original")) return false;
-      if (!titleLower.includes("1080")) return false;
+      const extractedLang = extractLanguage(cleanedTitle);
+      
+      // Only allow Original, Multi, or one of the 4 specified languages
+      if (extractedLang === "Default") return false;
+      
+      // Must have allowed quality marker: 1080p, 2160p, 4K, or Multi
+      if (!hasAllowedQuality(cleanedTitle)) return false;
+      
       if (typeof item?.url !== "string" || !item.url.startsWith("https")) return false;
 
       const innerParamMatch = item.url.match(/[?&](?:u|url)=(https?:\/\/[^&]+)/i);
       return !innerParamMatch || innerParamMatch[1].startsWith("https");
     });
 
-    // Sort before building: Original first, then Multi
+    // Sort: Original first (highest priority), then Multi, then other languages
     validItems.sort((a, b) => {
-      const aOrig = cleanText(a.title).toLowerCase().includes("original");
-      const bOrig = cleanText(b.title).toLowerCase().includes("original");
-      if (aOrig && !bOrig) return -1;
-      if (!aOrig && bOrig) return 1;
+      const aLang = extractLanguage(cleanText(a.title));
+      const bLang = extractLanguage(cleanText(b.title));
+      
+      const aIsTop = aLang === "Original" || aLang === "Multi";
+      const bIsTop = bLang === "Original" || bLang === "Multi";
+      
+      // Both are top tier
+      if (aIsTop && bIsTop) {
+        // Within top tier: Original gets highest priority
+        if (aLang === "Original" && bLang !== "Original") return -1;
+        if (bLang === "Original" && aLang !== "Original") return 1;
+        return 0;
+      }
+      
+      // A is top, B is not
+      if (aIsTop && !bIsTop) return -1;
+      
+      // B is top, A is not
+      if (!aIsTop && bIsTop) return 1;
+      
+      // Both are non-top-tier languages, maintain order
       return 0;
     });
 
     const streams = yield Promise.all(validItems.map(buildStream));
-    return streams.filter(Boolean);
+    const filteredStreams = streams.filter(Boolean);
+    
+    // Group by language for per-language limiting
+    const groups = {};
+    for (const stream of filteredStreams) {
+      const key = stream._language;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(stream);
+    }
+    
+    // Build result with max 2 streams per language group
+    // Order: Original (max 2) → Multi (max 2) → Other languages (max 2 each)
+    const result = [];
+    
+    const orderedLanguages = ["Original", "Multi", ...ALLOWED_LANGUAGES];
+    
+    for (const lang of orderedLanguages) {
+      if (groups[lang]) {
+        // Limit each language to max 2 streams
+        const limited = groups[lang].slice(0, 2);
+        result.push(...limited);
+      }
+    }
+    
+    return result;
   });
 }
 
@@ -201,7 +294,7 @@ function fetchStreams(url) {
         Array.isArray(data?.streams) &&
         data.streams.some((s) => s?.externalUrl)
       ) {
-        const freeTrialUrl = url.replace(ECLIPSIA_API, ECLIPSIA_BACKUP_API);
+        const freeTrialUrl = url.replace(FASTRION_API, FASTRION_BACKUP_API);
         if (freeTrialUrl !== url) {
           const trialResponse = yield fetch(freeTrialUrl);
           if (trialResponse.ok) {
@@ -239,12 +332,12 @@ function getStreams(tmdbId, mediaType, season, episode) {
       if (!imdbId) return [];
 
       if (!isSeries) {
-        return yield fetchStreams(`${ECLIPSIA_API}/stream/movie/${imdbId}.json`);
+        return yield fetchStreams(`${FASTRION_API}/stream/movie/${imdbId}.json`);
       }
 
       return yield fetchFirstValid([
-        `${ECLIPSIA_API}/stream/series/${imdbId}:${pad2(s)}:${pad2(e)}.json`,
-        `${ECLIPSIA_API}/stream/series/${imdbId}:${parseInt(s, 10) || 1}:${parseInt(e, 10) || 1}.json`,
+        `${FASTRION_API}/stream/series/${imdbId}:${pad2(s)}:${pad2(e)}.json`,
+        `${FASTRION_API}/stream/series/${imdbId}:${parseInt(s, 10) || 1}:${parseInt(e, 10) || 1}.json`,
       ]);
     } catch {
       return [];
