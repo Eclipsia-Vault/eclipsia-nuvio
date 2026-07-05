@@ -19,6 +19,7 @@ function buildConfig(token) {
     source_vidking: 'on',
     source_vaplayer: 'on',
     res_2160: 'on',
+    subtitles_disabled: 'on',
     auth_token: token
   };
 }
