@@ -13,8 +13,8 @@ const __async = (__this, __arguments, generator) => {
   });
 };
 
-const ECLIPSIA_API = "https://addon.notorrent2.workers.dev";
-const ECLIPSIA_BACKUP_API = "https://addon-osvh.onrender.com";
+const ECLIPSIA_API = "https://addon-osvh.onrender.com";
+const ECLIPSIA_BACKUP_API = "https://addon.notorrent2.workers.dev";
 const TMDB_API_KEY = "6e6ab700b6477171ee6c23d504b1e9cb";
 
 const HEADERS = {
