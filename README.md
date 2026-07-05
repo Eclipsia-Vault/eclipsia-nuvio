@@ -4,20 +4,11 @@ A Curated Collection of Providers for **[Nuvio](https://github.com/NuvioMedia)**
 <br>Visit site to install plugins or see details: **[Eclipsia](https://eclipsia.statichost.page)**
 # **Installation**
 
-1. Open **[Nuvio](https://github.com/NuvioMedia)** app
-2. Go to **Settings → Content & Discovery → Plugins** <br>
-3. Add this repository URL:
-   ```
-   https://raw.githubusercontent.com/Eclipsia-Vault/eclipsia-nuvio/refs/heads/main/manifest.json
-   ```
+Go to **[Eclipsia Setup Wizard](https://eclipsia.statichost.page/guide)** & Follow the steps.
+
 > [!IMPORTANT]
 > You MUST set TMDB API Key in **Settings → Integrations → TMDB Enrichment**\
 > Otherwise plugins will not work reliably.
-
-### **Alternatively,**
-1. Go to **[Eclipsia](https://eclipsia.statichost.page)**
-2. Account → Sign in/Sign up Nuvio Account → Plugin Added
-3. Now, Sign in (New Nuvio Account), or Log out & Sign in again (Existing Nuvio Account)
 
 # **DMCA Notice**
 <p align="justify">We issue this notice to clarify that these plugins operate like standard web browsers by retrieving video files from the Internet and do not, by themselves, contravene the Digital Millennium Copyright Act (17 U.S.C. §§ 1201–1205, 17 U.S.C. § 512) or other applicable law. Any content accessed through the plugins is provided by third-party websites or file hosts and is not hosted, controlled, or maintained by this repository or the Nuvio application, and users are solely responsible for ensuring their use complies with applicable copyright, licensing, contract, and other laws. Pursuant to the DMCA, copyright owners seeking removal of infringing material should follow the notice-and-takedown procedures set forth in 17 U.S.C. §§ 1201–1205, 17 U.S.C. § 512. If you believe any content accessed via the plugins infringes intellectual property rights, please direct your complaints to the hosting websites or file hosts rather than to the repository maintainers or the Nuvio application developers.</p>
