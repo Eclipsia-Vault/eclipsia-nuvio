@@ -1,6 +1,6 @@
 {
   "name": "Eclipsia",
-  "version": "6.1.0",
+  "version": "6.2.0",
   "scrapers": [
     {
       "id": "soryn",
@@ -18,7 +18,7 @@
     {
       "id": "vornix",
       "name": "Vornix.",
-      "description": "Provider: Multi Providers (4k) | English",
+      "description": "Provider: Multi Providers | English",
       "version": "1.4.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
@@ -84,7 +84,7 @@
     {
       "id": "durnel",
       "name": "Durnel.",
-      "description": "Provider: CTGMovies | Multi",
+      "description": "Provider: CTGMovies | Multi-lang",
       "version": "3.2.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
