@@ -18,7 +18,7 @@
     {
       "id": "vornix",
       "name": "Vornix.",
-      "description": "Provider: Multi Providers | English",
+      "description": "Provider: Multi Providers | Multi-lang",
       "version": "1.4.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
