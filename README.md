@@ -1,10 +1,10 @@
 # Eclipsia
 
 A Curated Collection of Providers for **[Nuvio](https://github.com/NuvioMedia)**
-<br>Visit site to install plugins or see details: **[Eclipsia](https://eclipsia.statichost.page)**
+<br>Visit site to install plugins or see details: **[Eclipsia](https://eclipsia.codeberg.page)**
 # **Installation**
 
-Go to **[Eclipsia Setup Wizard](https://eclipsia.statichost.page/guide)** & Follow the steps.
+Go to **[Eclipsia Setup Wizard](https://eclipsia.codeberg.page/guide)** & Follow the steps.
 
 > [!IMPORTANT]
 > You MUST set TMDB API Key in **Settings → Integrations → TMDB Enrichment**\
