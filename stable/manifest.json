@@ -56,6 +56,19 @@
       "contentLanguage": ["en", "bn", "hi", "ja", "pt", "ar"]
     },
     {
+      "id": "hexion",
+      "name": "Hexion.",
+      "description": "Provider: 111477 | Multi-lang",
+      "version": "1.1.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/hexion.js",
+      "enabled": true,
+      "formats": ["mkv", "m3u8", "mp4"],
+      "logo": "",
+      "contentLanguage": ["en", "bn", "hi", "ja", "pt", "ar"]
+    },
+    {
       "id": "mavonyx",
       "name": "Mavonyx.",
       "description": "Provider: MovieBox | English, Bangla, Hindi",
