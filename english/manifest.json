@@ -1,6 +1,6 @@
 {
   "name": "Eclipsia [English]",
-  "version": "6.2.0",
+  "version": "6.3.0",
   "scrapers": [
     {
       "id": "soryn",
@@ -97,15 +97,15 @@
     {
       "id": "kryxalia",
       "name": "Kryxalia.",
-      "description": "Provider: AniNeko | Sub & Dubbed Anime",
-      "version": "1.3.0",
+      "description": "Provider: VidKing | Multi-Lang",
+      "version": "1.4.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/kryxalia.js",
-      "enabled": false,
+      "enabled": true,
       "formats": ["m3u8"],
       "logo": "",
-      "contentLanguage": ["en", "ja"]
+      "contentLanguage": ["en"]
     }
   ]
 }
