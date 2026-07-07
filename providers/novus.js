@@ -1,7 +1,7 @@
 "use strict";
 
 const PROVIDER_NAME   = 'Novus.';
-const BASE_URL        = 'https://cinefreak.nl';
+const BASE_URL        = 'https://cinefreak.net';
 const ECLIPSIA_BASE   = 'https://new5.cinecloud.site';
 const TMDB_API_KEY    = '6e6ab700b6477171ee6c23d504b1e9cb';
 const REQUEST_TIMEOUT = 12000;
