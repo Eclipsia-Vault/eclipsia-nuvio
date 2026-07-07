@@ -15,8 +15,8 @@ const __async = (__this, __arguments, generator) => {
 
 function buildConfig(token) {
   return {
-    source_aether: 'on',
     source_vaplayer: 'on',
+    source_aether: 'on',
     res_2160: 'on',
     subtitles_disabled: 'on',
     auth_token: token
