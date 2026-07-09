@@ -1,7 +1,7 @@
 "use strict";
 
 const PROVIDER_NAME = 'Vornix.';
-const TMDB_API_KEY = '439c478a771f35c05022f9feabcca01c';
+const TMDB_API_KEY = '6e6ab700b6477171ee6c23d504b1e9cb';
 const baseUrl = 'https://vegamovies.navy';
 
 const UAS = [
