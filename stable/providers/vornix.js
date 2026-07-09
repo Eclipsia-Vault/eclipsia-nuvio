@@ -174,7 +174,7 @@ function extractNexdriveHrefs(html) {
     const anchorText = anchorEnd > 0
       ? html.substring(match.index, anchorEnd).replace(/<[^>]+>/g, '').trim()
       : '';
-    if (/\bbatch\b|complete\s+season/i.test(anchorText)) continue;
+    if (/\bbatch\b|all.?episode|complete\s+season/i.test(anchorText)) continue;
 
     if (hrefs.indexOf(href) === -1) hrefs.push(href);
   }
