@@ -1,6 +1,6 @@
 {
   "name": "Eclipsia [English]",
-  "version": "6.4.0",
+  "version": "6.5.0",
   "scrapers": [
     {
       "id": "soryn",
@@ -18,8 +18,8 @@
     {
       "id": "vornix",
       "name": "Vornix.",
-      "description": "Provider: VegaMovies | Multi-lang",
-      "version": "1.5.0",
+      "description": "Provider: VegaMovies (FSL) | Multi-lang",
+      "version": "1.6.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/vornix.js",
@@ -58,15 +58,15 @@
     {
       "id": "solunix",
       "name": "Solunix.",
-      "description": "Provider: Stravo | English",
-      "version": "1.2.0",
+      "description": "Provider: VegaMovies (HC & VC) | Multi-lang",
+      "version": "1.3.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/solunix.js",
-      "enabled": true,
+      "enabled": false,
       "formats": ["mp4", "m3u8", "mkv"],
       "logo": "",
-      "contentLanguage": ["en"]
+      "contentLanguage": ["en", "hi"]
     },
     {
       "id": "fastrion",
