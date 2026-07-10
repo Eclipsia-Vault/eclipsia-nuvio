@@ -1,6 +1,6 @@
 {
   "name": "Eclipsia",
-  "version": "6.5.0",
+  "version": "6.6.0",
   "scrapers": [
     {
       "id": "soryn",
@@ -59,7 +59,7 @@
       "id": "hexion",
       "name": "Hexion.",
       "description": "Provider: 111477 | Multi-lang",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/hexion.js",

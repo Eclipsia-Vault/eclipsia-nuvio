@@ -1,6 +1,6 @@
 {
   "name": "Eclipsia [Stable]",
-  "version": "6.5.0",
+  "version": "6.6.0",
   "scrapers": [
     {
       "id": "soryn",
@@ -53,6 +53,19 @@
       "hasSettings": true,
       "formats": ["m3u8", "mp4", "mkv"],
       "logo": "https://raw.githubusercontent.com/eclipsia-404/util-nuvio/refs/heads/main/icons/nm.png",
+      "contentLanguage": ["en", "bn", "hi", "ja", "pt", "ar"]
+    },
+    {
+      "id": "hexion",
+      "name": "Hexion.",
+      "description": "Provider: 111477 | Multi-lang",
+      "version": "1.2.0",
+      "author": "Eclipsia",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/hexion.js",
+      "enabled": true,
+      "formats": ["mkv", "m3u8", "mp4"],
+      "logo": "",
       "contentLanguage": ["en", "bn", "hi", "ja", "pt", "ar"]
     },
     {
