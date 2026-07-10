@@ -3,7 +3,7 @@
 const __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     const fulfilled = (value) => { try { step(generator.next(value)); } catch (e) { reject(e); } };
-    const rejected  = (value) => { try { step(generator.throw(value)); } catch (e) { reject(e); } };
+    const rejected = (value) => { try { step(generator.throw(value)); } catch (e) { reject(e); } };
     const step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
     step((generator = generator.apply(__this, __arguments)).next());
   });
@@ -23,8 +23,8 @@ const HEADERS = {
 
 const pad2 = (n) => String(Number.parseInt(n ?? 0, 10) || 0).padStart(2, "0");
 const cleanText = (str) => String(str ?? "").replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]/gu, "").trim();
-const extractQuality  = (t) => String(t ?? "").match(/(\d{3,4}p|4K)/i)?.[0] ?? null;
-const extractSize     = (t) => { const m = String(t ?? "").match(/(\d+\.?\d*)\s*(GB|MB|TB)/i); return m ? `${parseFloat(m[1])} ${m[2].toUpperCase()}` : null; };
+const extractQuality = (t) => String(t ?? "").match(/(\d{3,4}p|4K)/i)?.[0] ?? null;
+const extractSize = (t) => { const m = String(t ?? "").match(/(\d+\.?\d*)\s*(GB|MB|TB)/i); return m ? `${parseFloat(m[1])} ${m[2].toUpperCase()}` : null; };
 const extractBitDepth = (t) => String(t ?? "").match(/(\d{2,3})bit/i)?.[0]?.toLowerCase() ?? null;
 
 const extractLanguage = (t) => {
@@ -83,22 +83,22 @@ function buildStream(item) {
     if (String(item.url).includes("github.com")) return null;
 
     const ct = cleanText(item.title);
-    const quality  = extractQuality(ct);
+    const quality = extractQuality(ct);
     const language = extractLanguage(ct);
     const fileSize = extractSize(ct);
-    const source   = extractSource(ct);
-    const codec    = extractCodec(ct);
+    const source = extractSource(ct);
+    const codec = extractCodec(ct);
     const bitDepth = extractBitDepth(ct);
 
     const parts = ["Hexion."];
-    if (fileSize)                            parts.push(fileSize);
-    if (source)                              parts.push(source);
-    if (codec)                               parts.push(codec);
-    if (bitDepth)                            parts.push(bitDepth);
-    if (quality && !ct.includes(quality))    parts.push(quality);
+    if (fileSize) parts.push(fileSize);
+    if (source) parts.push(source);
+    if (codec) parts.push(codec);
+    if (bitDepth) parts.push(bitDepth);
+    if (quality && !ct.includes(quality)) parts.push(quality);
 
     const displayName = parts.join(" • ");
-    const fullName    = language !== "Default" ? `${displayName} (${language})` : displayName;
+    const fullName = language !== "Default" ? `${displayName} (${language})` : displayName;
 
     const headers = { ...(item.behaviorHints?.proxyHeaders?.request ?? {}), ...(item.behaviorHints?.headers ?? {}) };
     const streamUrl = isProxyUrl(item.url) ? yield resolveProxyUrl(item.url) : item.url;
@@ -165,9 +165,9 @@ function getStreams(tmdbId, mediaType, season, episode) {
 
       const paths = isSeries
         ? [
-            `stream/series/${imdbId}:${pad2(s)}:${pad2(e)}.json`,
-            `stream/series/${imdbId}:${parseInt(s, 10) || 1}:${parseInt(e, 10) || 1}.json`,
-          ]
+          `stream/series/${imdbId}:${pad2(s)}:${pad2(e)}.json`,
+          `stream/series/${imdbId}:${parseInt(s, 10) || 1}:${parseInt(e, 10) || 1}.json`,
+        ]
         : [`stream/movie/${imdbId}.json`];
 
       return yield fetchWithFallback(paths);

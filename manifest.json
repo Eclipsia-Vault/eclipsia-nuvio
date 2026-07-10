@@ -103,9 +103,9 @@
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/durnel.js",
       "enabled": true,
-      "formats": ["mp4","mkv","m3u8"],
+      "formats": ["mp4", "mkv", "m3u8"],
       "logo": "",
-      "contentLanguage": ["en","bn","hi","ja","ko"]
+      "contentLanguage": ["en", "bn", "hi", "ja", "ko"]
     },
     {
       "id": "solunix",
