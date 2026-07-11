@@ -1,6 +1,6 @@
 {
   "name": "Eclipsia [Stable]",
-  "version": "6.6.0",
+  "version": "6.7.0",
   "scrapers": [
     {
       "id": "soryn",
@@ -19,7 +19,7 @@
       "id": "vornix",
       "name": "Vornix.",
       "description": "Provider: VegaMovies (FSL) | Multi-lang",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "author": "Eclipsia",
       "supportedTypes": ["movie", "tv"],
       "filename": "providers/vornix.js",

@@ -13,8 +13,9 @@ const UAS = [
 let currentUA = UAS[0];
 
 const FETCH_TIMEOUT = 20000;
-
 const QUALITY_WEIGHTS = { '2160P': 4, '1080P': 3, '720P': 2, '480P': 1 };
+
+const _tmdbCache = {};
 
 function enforceHttps(url) {
   if (!url) return url;
@@ -30,7 +31,7 @@ function hdrs(extra) {
 }
 
 function raceTimeout(ms) {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function (_, reject) {
     setTimeout(function () { reject(new Error('Timeout')); }, ms);
   });
 }
@@ -39,7 +40,7 @@ async function fetchText(url, options) {
   try {
     const res = await Promise.race([fetch(url, options || {}), raceTimeout(FETCH_TIMEOUT)]);
     if (res && res.ok) return await res.text();
-  } catch (e) { }
+  } catch (e) {}
   return null;
 }
 
@@ -47,15 +48,19 @@ async function fetchJson(url, options) {
   try {
     const res = await Promise.race([fetch(url, options || {}), raceTimeout(FETCH_TIMEOUT)]);
     if (res && res.ok) return await res.json();
-  } catch (e) { }
+  } catch (e) {}
   return null;
 }
 
 async function getTMDBInfo(tmdbId, type) {
+  const key = tmdbId + '|' + type;
+  if (_tmdbCache[key]) return _tmdbCache[key];
   const endpoint = (type === 'tv' || type === 'series') ? 'tv' : 'movie';
   const url = 'https://api.themoviedb.org/3/' + endpoint + '/' + tmdbId
     + '?api_key=' + TMDB_API_KEY + '&language=en-US';
-  return await fetchJson(url, { headers: { 'User-Agent': currentUA } });
+  const data = await fetchJson(url, { headers: { 'User-Agent': currentUA } });
+  if (data) _tmdbCache[key] = data;
+  return data;
 }
 
 async function searchSite(query) {
@@ -113,17 +118,11 @@ function findAllMatches(searchResults, tmdbInfo, isSeries, seasonNumber) {
 function extractQualitySize(text) {
   let quality = 'HD';
   let size = '';
-
   const resMatch = text.match(/(2160|1080|720|480)\s*[pP]/i);
-  if (resMatch) {
-    quality = resMatch[1] + 'P';
-  } else if (/4K|UHD/i.test(text)) {
-    quality = '2160P';
-  }
-
+  if (resMatch) quality = resMatch[1] + 'P';
+  else if (/4K|UHD/i.test(text)) quality = '2160P';
   const sizeMatch = text.match(/\[([^\]]*(?:GB|MB)[^\]]*)\]/i);
   if (sizeMatch) size = sizeMatch[1];
-
   return { quality: quality, size: size };
 }
 
@@ -135,7 +134,6 @@ function extractHeadingsForNexdrive(html) {
     const parts = html.split(patterns[p]);
     for (let i = 1; i < parts.length; i++) {
       const section = parts[i];
-
       if (/\bbatch\b|all.?episode|complete.?season/i.test(section)) continue;
 
       const linkRe = /<a[^>]*href="([^"]*nexdrive[^"]*)"[^>]*>/gi;
@@ -144,11 +142,7 @@ function extractHeadingsForNexdrive(html) {
         const href = match[1];
         if (map[href]) continue;
 
-        let label = section
-          .replace(/<[^>]+>/g, ' ')
-          .replace(/\s+/g, ' ')
-          .trim();
-
+        let label = section.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
         const ndIdx = label.indexOf('nexdrive');
         if (ndIdx > 0) label = label.substring(0, ndIdx).trim();
         if (label.length > 80) label = label.substring(0, 80).trim();
@@ -169,13 +163,11 @@ function extractNexdriveHrefs(html) {
   while ((match = linkRe.exec(html)) !== null) {
     const href = match[1].trim();
     if (!href) continue;
-
     const anchorEnd = html.indexOf('</a>', match.index);
     const anchorText = anchorEnd > 0
       ? html.substring(match.index, anchorEnd).replace(/<[^>]+>/g, '').trim()
       : '';
     if (/\bbatch\b|all.?episode|complete\s+season/i.test(anchorText)) continue;
-
     if (hrefs.indexOf(href) === -1) hrefs.push(href);
   }
   return hrefs;
@@ -185,7 +177,6 @@ function extractNexdriveVcloudLinks(html) {
   const links = [];
   const linkRe = /<a\s+href="(https:\/\/vcloud\.zip\/[^"]+)"/gi;
   let match;
-
   while ((match = linkRe.exec(html)) !== null) {
     const url = match[1].trim();
     links.push({
@@ -199,7 +190,6 @@ function extractNexdriveVcloudLinks(html) {
 async function resolveVcloudApi(url) {
   const html = await fetchText(url, { headers: hdrs({ 'Referer': baseUrl + '/' }) });
   if (!html) return null;
-
   const match = html.match(/<a\s+href="(https:\/\/vcloud\.zip\/[^"]+)"[^>]*>Direct\s+Download/i);
   return match ? match[1].trim() : null;
 }
@@ -209,21 +199,14 @@ async function resolveVcloudToken(url) {
     headers: hdrs({ 'Referer': baseUrl + '/', 'Cookie': 'xla=s4t' })
   });
   if (!html) return null;
-
   const match = html.match(/atob\s*\(\s*atob\s*\(\s*['"]([^'"]+)['"]\s*\)\s*\)/);
   if (!match) return null;
-
-  try {
-    return atob(atob(match[1]));
-  } catch (e) {
-    return null;
-  }
+  try { return atob(atob(match[1])); } catch (e) { return null; }
 }
 
 function extractFSLLinks(html) {
   const results = [];
   if (!html) return results;
-
   const anchors = html.match(/<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi);
   if (!anchors) return results;
 
@@ -318,9 +301,9 @@ function parseStreamMeta(rawLabel, fallbackQuality, fallbackSize, fslType) {
   if (chm) channels = chm[1];
 
   const knownLangs = [
-    'English', 'Hindi', 'Tamil', 'Telugu', 'Malayalam', 'Kannada',
-    'Bengali', 'Punjabi', 'Marathi', 'Gujarati', 'Urdu',
-    'French', 'Spanish', 'German', 'Italian', 'Japanese', 'Korean', 'Chinese', 'Arabic', 'Russian'
+    'English','Hindi','Tamil','Telugu','Malayalam','Kannada',
+    'Bengali','Punjabi','Marathi','Gujarati','Urdu',
+    'French','Spanish','German','Italian','Japanese','Korean','Chinese','Arabic','Russian'
   ];
   let langs = [];
   for (let l = 0; l < knownLangs.length; l++) {
@@ -397,6 +380,11 @@ function dedupe(streams) {
 
 async function processNexdrive(nexdriveUrl, headingMap, movieTitle, isSeries, seasonNum, episodeNum) {
   const meta = headingMap[nexdriveUrl] || { quality: 'HD', size: '' };
+
+  const knownQuality = meta.quality;
+  if (knownQuality && knownQuality !== 'HD'
+      && knownQuality !== '1080P' && knownQuality !== '2160P') return [];
+
   const fullUrl = enforceHttps(nexdriveUrl.startsWith('http')
     ? nexdriveUrl
     : baseUrl + '/' + nexdriveUrl.replace(/^\//, ''));
@@ -448,23 +436,22 @@ async function processNexdrive(nexdriveUrl, headingMap, movieTitle, isSeries, se
 
   const streams = [];
 
-  for (let vi = 0; vi < selectedLinks.length; vi++) {
-    const vlink = selectedLinks[vi];
+  await Promise.all(selectedLinks.map(async function (vlink) {
     let vUrl = vlink.url;
 
     if (vlink.type === 'api') {
       const resolved = await resolveVcloudApi(vUrl);
-      if (!resolved) continue;
+      if (!resolved) return;
       vUrl = resolved;
     }
 
     const directPageUrl = enforceHttps(await resolveVcloudToken(vUrl));
-    if (!directPageUrl) continue;
+    if (!directPageUrl) return;
 
     const directHtml = await fetchText(directPageUrl, {
       headers: hdrs({ 'Referer': baseUrl + '/', 'Cookie': 'xla=s4t' })
     });
-    if (!directHtml) continue;
+    if (!directHtml) return;
 
     const fslLinks = extractFSLLinks(directHtml);
 
@@ -491,7 +478,7 @@ async function processNexdrive(nexdriveUrl, headingMap, movieTitle, isSeries, se
         headers: { 'Referer': baseUrl + '/', 'User-Agent': currentUA }
       });
     }
-  }
+  }));
 
   return streams;
 }
@@ -545,16 +532,22 @@ async function getStreams(tmdbId, type, seasonNumber, episodeNumber) {
       if (seasonFiltered.length) nexdriveHrefs = seasonFiltered;
     }
 
-    const linkCap = isSeries ? 60 : 20;
+    const linkCap = isSeries ? 15 : 20;
     if (nexdriveHrefs.length > linkCap) continue;
 
-    const tasks = nexdriveHrefs.map(function (href) {
+    const qualityFiltered = nexdriveHrefs.filter(function (href) {
+      const meta = headingMap[href];
+      if (!meta || meta.quality === 'HD') return true;
+      return meta.quality === '1080P' || meta.quality === '2160P';
+    });
+    const hrefs = qualityFiltered.length ? qualityFiltered : nexdriveHrefs;
+
+    const tasks = hrefs.map(function (href) {
       return processNexdrive(href, headingMap, title, isSeries, seasonNumber, episodeNumber);
     });
 
     const results = await Promise.all(tasks);
     let streams = [].concat.apply([], results);
-
     streams = dedupe(streams);
     streams.sort(function (a, b) {
       if (b._resWeight !== a._resWeight) return b._resWeight - a._resWeight;
