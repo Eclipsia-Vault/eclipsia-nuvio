@@ -1,5 +1,9 @@
 # Eclipsia
 
+> [!WARNING]
+> This repository is outdated and no longer maintained. We have completely migrated to Codeberg. Please visit our Codeberg repository for the latest updates and versions. For additional details, see our Telegram channel.
+> <br>Visit https://eclipsia.codeberg.page
+
 A Curated Collection of Providers for **[Nuvio](https://github.com/NuvioMedia)**
 <br>Visit site to install plugins or see details: **[Eclipsia](https://eclipsia.codeberg.page)**
 
@@ -10,10 +14,6 @@ Go to **[Eclipsia Setup Wizard](https://eclipsia.codeberg.page/guide)** & Follow
 > [!IMPORTANT]
 > You MUST set TMDB API Key in **Settings → Integrations → TMDB Enrichment**\
 > Otherwise plugins will not work reliably.
-
-> [!WARNING]
-> **Project migrated to Codeberg.** This GitHub repository is outdated and no longer updated. Visit our Codeberg repository for the latest releases. Check Telegram channel for more information.
-> <br> Visit https://eclipsia.codeberg.page
 
 # **DMCA Notice**
 <p align="justify">We issue this notice to clarify that these plugins operate like standard web browsers by retrieving video files from the Internet and do not, by themselves, contravene the Digital Millennium Copyright Act (17 U.S.C. §§ 1201–1205, 17 U.S.C. § 512) or other applicable law. Any content accessed through the plugins is provided by third-party websites or file hosts and is not hosted, controlled, or maintained by this repository or the Nuvio application, and users are solely responsible for ensuring their use complies with applicable copyright, licensing, contract, and other laws. Pursuant to the DMCA, copyright owners seeking removal of infringing material should follow the notice-and-takedown procedures set forth in 17 U.S.C. §§ 1201–1205, 17 U.S.C. § 512. If you believe any content accessed via the plugins infringes intellectual property rights, please direct your complaints to the hosting websites or file hosts rather than to the repository maintainers or the Nuvio application developers.</p>
